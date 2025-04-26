@@ -28,7 +28,7 @@ namespace LauncherAppAvalonia.Views
             _viewModel = new EditItemViewModel(dataService, itemHandlerService, localizationService, this);
             DataContext = _viewModel;
         }
-        
+
         /// <summary>
         /// 设置为编辑模式
         /// </summary>

@@ -252,18 +252,18 @@ namespace LauncherAppAvalonia.ViewModels
             // 将视图模型列表转换为模型列表
             var modelItems = items.Select(vm => vm.ToLauncherItem()).ToList();
             _dataService.UpdateItemsOrder(modelItems);
-            
+
             // 更新当前项目集合
             _items.Clear();
             foreach (var item in items)
             {
                 _items.Add(item);
             }
-            
+
             // 刷新过滤后的项目列表
             FilterItems();
         }
-        
+
         /// <summary>
         /// 更新项目排序 - 无参数版本
         /// </summary>

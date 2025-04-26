@@ -115,9 +115,9 @@ namespace LauncherAppAvalonia
 
                     // 开始拖拽操作 - 使用更安全的方式处理任务结果
                     var task = DragDrop.DoDragDrop(e, data, DragDropEffects.Move);
-                    
+
                     // 为了避免警告而不使用ContinueWith，使用同步模式直接等待结果
-                    task.ContinueWith(_ => 
+                    task.ContinueWith(_ =>
                     {
                         // 使用Avalonia的Dispatcher确保UI线程安全
                         Dispatcher.UIThread.Post(() =>
@@ -224,7 +224,7 @@ namespace LauncherAppAvalonia
                     {
                         var bounds = container.Bounds;
                         var relativePoint = point - bounds.Position;
-                        
+
                         if (bounds.Contains(relativePoint))
                         {
                             return viewModel;

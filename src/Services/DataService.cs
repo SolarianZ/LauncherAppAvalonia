@@ -266,7 +266,7 @@ namespace LauncherAppAvalonia.Services
         {
             _config.AutoLaunch.Enabled = enabled;
             SaveConfig();
-            
+
             // 根据平台实现开机自启动配置
             SetSystemAutoStart(enabled);
         }
