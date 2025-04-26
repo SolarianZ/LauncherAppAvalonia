@@ -1,0 +1,15 @@
+{
+    "omnisharp.enableRoslynAnalyzers": true,
+    "omnisharp.enableEditorConfigSupport": true,
+    "omnisharp.useModernNet": true,
+    "dotnet.completion.showCompletionItemsFromUnimportedNamespaces": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "dotnet.server.useOmnisharp": true,
+    "csharp.format.enable": true,
+    "csharp.semanticHighlighting.enabled": true,
+    "files.exclude": {
+        "**/bin": false,
+        "**/obj": false
+    }
+}
