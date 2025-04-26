@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Input;
 using Avalonia.Controls;
+using LauncherAppAvalonia.Models;
 using LauncherAppAvalonia.Services;
 
 namespace LauncherAppAvalonia.ViewModels

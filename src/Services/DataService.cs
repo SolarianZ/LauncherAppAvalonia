@@ -24,6 +24,7 @@ namespace LauncherAppAvalonia.Services
         // 数据变更事件
         public event EventHandler? ItemsChanged;
         public event EventHandler<ShortcutConfigArgs>? ShortcutConfigChanged;
+        public event EventHandler<string>? ThemeChanged;
 
         public DataService()
         {
@@ -80,7 +81,7 @@ namespace LauncherAppAvalonia.Services
             {
                 string json = JsonSerializer.Serialize(_items, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(_itemsFilePath, json);
-                
+
                 // 触发项目变更事件
                 ItemsChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -203,6 +204,9 @@ namespace LauncherAppAvalonia.Services
         {
             _config.Theme = theme;
             SaveConfig();
+
+            // 触发主题变更事件
+            ThemeChanged?.Invoke(this, theme);
         }
 
         /// <summary>
@@ -212,6 +216,8 @@ namespace LauncherAppAvalonia.Services
         {
             _config.Language = language;
             SaveConfig();
+
+            // 语言变更不在这里触发事件，因为需要通过LocalizationService来处理
         }
 
         /// <summary>
@@ -221,90 +227,44 @@ namespace LauncherAppAvalonia.Services
         {
             _config.Shortcut = config;
             SaveConfig();
-            
+
             // 触发快捷键配置变更事件
             ShortcutConfigChanged?.Invoke(this, new ShortcutConfigArgs(_config.Shortcut));
         }
 
         /// <summary>
-        /// 更新自动启动配置
+        /// 更新启动行为配置
         /// </summary>
-        public void UpdateAutoLaunchConfig(bool enabled)
+        public void UpdateStartupConfig(bool minimizeToTray)
         {
-            _config.AutoLaunch.Enabled = enabled;
+            _config.MinimizeToTrayOnStart = minimizeToTray;
             SaveConfig();
         }
-    }
-
-    /// <summary>
-    /// 应用配置类
-    /// </summary>
-    public class AppConfig
-    {
-        /// <summary>
-        /// 主窗口配置
-        /// </summary>
-        public MainWindowConfig MainWindow { get; set; } = new();
 
         /// <summary>
-        /// 主题配置
+        /// 更新关闭行为配置
         /// </summary>
-        public string Theme { get; set; } = "system";
-
-        /// <summary>
-        /// 语言配置
-        /// </summary>
-        public string Language { get; set; } = "system";
-
-        /// <summary>
-        /// 快捷键配置
-        /// </summary>
-        public ShortcutConfig Shortcut { get; set; } = new();
-
-        /// <summary>
-        /// 自动启动配置
-        /// </summary>
-        public AutoLaunchConfig AutoLaunch { get; set; } = new();
-    }
-
-    /// <summary>
-    /// 主窗口配置类
-    /// </summary>
-    public class MainWindowConfig
-    {
-        public double Width { get; set; } = 400;
-        public double Height { get; set; } = 600;
-        public double X { get; set; } = double.NaN;
-        public double Y { get; set; } = double.NaN;
-    }
-
-    /// <summary>
-    /// 快捷键配置类
-    /// </summary>
-    public class ShortcutConfig
-    {
-        public bool Enabled { get; set; } = true;
-        public string Shortcut { get; set; } = "Alt+Shift+Q";
-    }
-
-    /// <summary>
-    /// 自动启动配置类
-    /// </summary>
-    public class AutoLaunchConfig
-    {
-        public bool Enabled { get; set; } = false;
-    }
-
-    /// <summary>
-    /// 快捷键配置事件参数
-    /// </summary>
-    public class ShortcutConfigArgs : EventArgs
-    {
-        public ShortcutConfig Config { get; }
-
-        public ShortcutConfigArgs(ShortcutConfig config)
+        public void UpdateCloseConfig(bool minimizeToTray)
         {
-            Config = config;
+            _config.MinimizeToTrayOnClose = minimizeToTray;
+            SaveConfig();
+        }
+
+        /// <summary>
+        /// 更新更新检查配置
+        /// </summary>
+        public void UpdateCheckUpdateConfig(bool checkOnStart)
+        {
+            _config.CheckUpdateOnStart = checkOnStart;
+            SaveConfig();
+        }
+
+        /// <summary>
+        /// 获取数据存储位置
+        /// </summary>
+        public string GetDataFolderPath()
+        {
+            return _userDataFolder;
         }
     }
 }

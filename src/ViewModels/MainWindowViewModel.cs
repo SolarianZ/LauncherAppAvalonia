@@ -91,12 +91,12 @@ namespace LauncherAppAvalonia.ViewModels
         {
             var items = _dataService.GetItems();
             _items.Clear();
-            
+
             foreach (var item in items)
             {
                 _items.Add(new LauncherItemViewModel(item));
             }
-            
+
             FilterItems();
         }
 
@@ -112,10 +112,10 @@ namespace LauncherAppAvalonia.ViewModels
             else
             {
                 var query = SearchText.ToLower();
-                var filtered = _items.Where(item => 
-                    (item.Name?.ToLower().Contains(query) ?? false) || 
+                var filtered = _items.Where(item =>
+                    (item.Name?.ToLower().Contains(query) ?? false) ||
                     item.Path.ToLower().Contains(query)).ToList();
-                
+
                 FilteredItems = new ObservableCollection<LauncherItemViewModel>(filtered);
             }
         }
@@ -152,8 +152,28 @@ namespace LauncherAppAvalonia.ViewModels
         private void OpenItem(LauncherItemViewModel? item)
         {
             if (item == null) return;
-            
-            _itemHandlerService.HandleItemAction(item.ToLauncherItem());
+
+            // 更新最后访问时间
+            var launcherItem = item.ToLauncherItem();
+            launcherItem.LastAccessed = DateTime.Now;
+
+            // 查找项目索引并更新
+            int index = -1;
+            for (int i = 0; i < _items.Count; i++)
+            {
+                if (_items[i].Path == item.Path && _items[i].Type == item.Type)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index >= 0)
+            {
+                _dataService.UpdateItem(index, launcherItem);
+            }
+
+            _itemHandlerService.HandleItemAction(launcherItem);
         }
 
         /// <summary>
@@ -162,7 +182,7 @@ namespace LauncherAppAvalonia.ViewModels
         private void RemoveItem(LauncherItemViewModel? item)
         {
             if (item == null) return;
-            
+
             int index = _items.IndexOf(item);
             if (index >= 0)
             {
@@ -186,7 +206,7 @@ namespace LauncherAppAvalonia.ViewModels
         private void ShowInFolder(LauncherItemViewModel? item)
         {
             if (item == null) return;
-            
+
             _itemHandlerService.ShowItemInFolder(item.Path);
         }
 
@@ -196,9 +216,16 @@ namespace LauncherAppAvalonia.ViewModels
         private async void CopyPath(LauncherItemViewModel? item)
         {
             if (item == null || _mainWindow == null) return;
-            
+
             await _mainWindow.CopyToClipboard(item.Path);
-            // TODO: 显示提示信息 "路径已复制"
+
+            // 显示提示信息
+            string message = _localizationService.Translate("PathCopied");
+            if (string.IsNullOrEmpty(message) || message == "PathCopied")
+            {
+                message = "路径已复制";
+            }
+            ToastService.Show(message);
         }
 
         /// <summary>
@@ -242,6 +269,14 @@ namespace LauncherAppAvalonia.ViewModels
                 var item = new LauncherItem(path, type, name);
                 _dataService.AddItem(item);
             }
+
+            // 显示添加成功提示
+            string message = _localizationService.Translate("ItemAdded");
+            if (string.IsNullOrEmpty(message) || message == "ItemAdded")
+            {
+                message = items.Count > 1 ? "添加了多个项目" : "项目已添加";
+            }
+            ToastService.Show(message);
         }
     }
 
@@ -255,17 +290,22 @@ namespace LauncherAppAvalonia.ViewModels
         public string? Name { get; }
         public string DisplayName => !string.IsNullOrEmpty(Name) ? Name : System.IO.Path.GetFileName(Path) ?? Path;
         public string Icon => GetIcon();
+        public DateTime LastAccessed { get; }
 
         public LauncherItemViewModel(LauncherItem item)
         {
             Path = item.Path;
             Type = item.Type;
             Name = item.Name;
+            LastAccessed = item.LastAccessed;
         }
 
         public LauncherItem ToLauncherItem()
         {
-            return new LauncherItem(Path, Type, Name);
+            return new LauncherItem(Path, Type, Name)
+            {
+                LastAccessed = LastAccessed
+            };
         }
 
         public string GetIcon()
