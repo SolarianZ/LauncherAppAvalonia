@@ -53,6 +53,8 @@ LauncherAppAvalonia/src/
 6. 保持代码的一致性，不要在项目中维护多个具有相同功能的文件。
 7. 打印日志时使用英文，不需要多语言支持，避免乱码。
 
+关注Avalonia UI的版本变更：https://docs.avaloniaui.net/docs/stay-up-to-date/upgrade-from-0.10
+
 ### 代码优化建议
 
 1. **UI/UX 一致性**

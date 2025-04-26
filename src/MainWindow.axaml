@@ -5,6 +5,7 @@
         xmlns:vm="using:LauncherAppAvalonia.ViewModels"
         mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="600"
         x:Class="LauncherAppAvalonia.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
         Title="Launcher"
         Icon="/Assets/Icons/app-icon.ico"
         Width="400" Height="600"
@@ -25,7 +26,7 @@
             <!-- 添加按钮 -->
             <Button Grid.Column="1" 
                     Margin="0,0,8,0"
-                    Content="+"
+                    Content="+" 
                     FontSize="20"
                     MinWidth="40"
                     HorizontalContentAlignment="Center"

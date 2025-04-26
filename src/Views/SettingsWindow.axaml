@@ -5,6 +5,7 @@
         xmlns:vm="using:LauncherAppAvalonia.ViewModels"
         mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="500"
         x:Class="LauncherAppAvalonia.Views.SettingsWindow"
+        x:DataType="vm:SettingsViewModel"
         Title="设置"
         Icon="/Assets/Icons/app-icon.ico"
         Width="450" Height="500"
@@ -49,7 +50,7 @@
                                   Content="启用"
                                   IsChecked="{Binding EnableShortcut}"
                                   VerticalAlignment="Center" />
-                        
+
                         <TextBox Grid.Column="1"
                                  Text="{Binding Shortcut}"
                                  Margin="10,0,0,0"
@@ -60,7 +61,7 @@
                                Opacity="0.7"
                                FontSize="12"
                                Margin="0,0,0,15" />
-                    
+
                     <!-- 开机自启动设置 -->
                     <CheckBox Content="开机自动启动"
                               IsChecked="{Binding EnableAutoLaunch}"
@@ -75,7 +76,7 @@
                                 HorizontalContentAlignment="Center"
                                 Margin="0,0,5,0"
                                 Command="{Binding OpenStorageLocationCommand}" />
-                        
+
                         <Button Grid.Column="1"
                                 Content="清空所有数据"
                                 HorizontalAlignment="Stretch"
@@ -94,30 +95,30 @@
                        Width="80"
                        Height="80"
                        Margin="0,10,0,10" />
-                
+
                 <TextBlock Text="Launcher App"
                            FontSize="20"
                            FontWeight="SemiBold"
                            HorizontalAlignment="Center" />
-                
+
                 <TextBlock Text="{Binding AppVersion, StringFormat=版本: {0}}"
                            HorizontalAlignment="Center"
                            Margin="0,5,0,10" />
-                
+
                 <TextBlock Text="记录和快速访问常用文件、文件夹、URL和指令的工具。"
                            TextWrapping="Wrap"
                            TextAlignment="Center"
                            Margin="0,0,0,20" />
-                
+
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
                     <Button Content="GitHub"
                             Command="{Binding OpenGithubCommand}"
                             Margin="0,0,10,0" />
-                    
+
                     <Button Content="报告问题"
                             Command="{Binding ReportIssueCommand}" />
                 </StackPanel>
-                
+
                 <TextBlock Text="按F12打开开发者工具"
                            HorizontalAlignment="Center"
                            Opacity="0.7"
