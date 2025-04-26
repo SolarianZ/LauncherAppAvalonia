@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:LauncherAppAvalonia.ViewModels"
+        xmlns:launcherAppAvalonia="clr-namespace:LauncherAppAvalonia"
         mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="600"
         x:Class="LauncherAppAvalonia.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -50,13 +51,13 @@
             <Grid>
                 <!-- 空列表消息 -->
                 <TextBlock Text="点击 + 按钮添加新的项目"
-                           IsVisible="{Binding FilteredItems.Count, Converter={x:Static ObjectConverters.IsZero}}"
+                           IsVisible="{Binding !FilteredItems.Count}"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource SystemBaseMediumColor}" />
                 
                 <!-- 项目列表 -->
-                <ListBox Items="{Binding FilteredItems}"
+                <ListBox ItemsSource="{Binding FilteredItems}"
                          Background="Transparent"
                          SelectedItem="{Binding SelectedItem}"
                          SelectionMode="Single"
@@ -70,11 +71,11 @@
                     </ListBox.Styles>
                     
                     <ListBox.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="vm:LauncherItemViewModel">
                             <Grid ColumnDefinitions="Auto,*">
                                 <!-- 项目图标 -->
                                 <TextBlock Grid.Column="0" 
-                                           Text="{Binding GetIcon()}" 
+                                           Text="{Binding Icon}" 
                                            FontSize="24"
                                            Margin="0,0,12,0"
                                            VerticalAlignment="Center" />
@@ -90,21 +91,21 @@
                     <ListBox.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="打开" 
-                                      Command="{Binding #MainWindow.ViewModel.OpenItemCommand}" 
-                                      CommandParameter="{Binding #MainWindow.ViewModel.SelectedItem}" />
+                                      Command="{Binding $parent[launcherAppAvalonia:MainWindow].ViewModel.OpenItemCommand}" 
+                                      CommandParameter="{Binding $parent[launcherAppAvalonia:MainWindow].ViewModel.SelectedItem}" />
                             <MenuItem Header="在文件夹中显示" 
-                                      Command="{Binding #MainWindow.ViewModel.ShowInFolderCommand}" 
-                                      CommandParameter="{Binding #MainWindow.ViewModel.SelectedItem}" />
+                                      Command="{Binding $parent[launcherAppAvalonia:MainWindow].ViewModel.ShowInFolderCommand}" 
+                                      CommandParameter="{Binding $parent[launcherAppAvalonia:MainWindow].ViewModel.SelectedItem}" />
                             <MenuItem Header="复制路径" 
-                                      Command="{Binding #MainWindow.ViewModel.CopyPathCommand}" 
-                                      CommandParameter="{Binding #MainWindow.ViewModel.SelectedItem}" />
+                                      Command="{Binding $parent[launcherAppAvalonia:MainWindow].ViewModel.CopyPathCommand}" 
+                                      CommandParameter="{Binding $parent[launcherAppAvalonia:MainWindow].ViewModel.SelectedItem}" />
                             <Separator />
                             <MenuItem Header="编辑" 
-                                      Command="{Binding #MainWindow.ViewModel.EditItemCommand}" 
-                                      CommandParameter="{Binding #MainWindow.ViewModel.SelectedItem}" />
+                                      Command="{Binding $parent[launcherAppAvalonia:MainWindow].ViewModel.EditItemCommand}" 
+                                      CommandParameter="{Binding $parent[launcherAppAvalonia:MainWindow].ViewModel.SelectedItem}" />
                             <MenuItem Header="移除" 
-                                      Command="{Binding #MainWindow.ViewModel.RemoveItemCommand}" 
-                                      CommandParameter="{Binding #MainWindow.ViewModel.SelectedItem}" />
+                                      Command="{Binding $parent[launcherAppAvalonia:MainWindow].ViewModel.RemoveItemCommand}" 
+                                      CommandParameter="{Binding $parent[launcherAppAvalonia:MainWindow].ViewModel.SelectedItem}" />
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>

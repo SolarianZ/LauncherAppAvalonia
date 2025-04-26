@@ -68,6 +68,53 @@ LauncherAppAvalonia/src/
    - 添加更全面的错误捕获和用户友好的错误显示
    - 实现操作日志记录功能
 
+## Avalonia UI 常见错误及解决方案
+
+在开发过程中遇到的一些常见错误和解决方案，可以作为参考：
+
+1. **类型转换错误**
+   - **错误描述**: 从 `IEnumerable<DataType>` 转换为 `IReadOnlyList<DataType>` 失败
+   - **解决方案**: 使用 `.ToList()` 方法进行显式转换，例如：
+     ```csharp
+     // 转换为List以匹配需要的参数类型
+     ViewModel.HandleDroppedItem(files.ToList(), this);
+     ```
+
+2. **XAML绑定错误**
+   - **错误描述**: 无法解析转换器，如 `ObjectConverters.IsZero` 或 `BoolConverters.ToString`
+   - **解决方案**: 
+     - 使用内联表达式代替转换器，例如 `IsVisible="{Binding !FilteredItems.Count}"`
+     - 对于标题等简单文本，可以使用静态文本而非复杂绑定
+
+3. **DataTemplate绑定错误**
+   - **错误描述**: 无法解析DataTemplate中的属性
+   - **解决方案**: 
+     - 显式声明DataTemplate的数据类型：`<DataTemplate x:DataType="vm:LauncherItemViewModel">`
+     - 确保绑定到公共属性而非方法，如将 `{Binding GetIcon()}` 替换为 `{Binding Icon}`
+     - 在ViewModel中添加相应的属性：`public string Icon => GetIcon();`
+
+4. **ContextMenu绑定问题**
+   - **错误描述**: ContextMenu默认不继承DataContext，导致绑定失败
+   - **解决方案**: 使用特殊的绑定语法访问父元素的DataContext:
+     ```xml
+     <ContextMenu>
+         <MenuItem Command="{Binding $parent[Window].DataContext.SomeCommand}" />
+     </ContextMenu>
+     ```
+
+5. **编译时文件锁定**
+   - **错误描述**: DLL被其他进程锁定，无法覆盖
+   - **解决方案**: 
+     - 使用 `dotnet clean` 清理项目后再构建
+     - 关闭所有可能运行的应用实例
+     - 重启IDE或开发工具
+
+6. **ListBox控件命名错误**
+   - **错误描述**: `Items` 属性不存在
+   - **解决方案**: 在Avalonia中使用 `ItemsSource` 而非 `Items` 绑定集合数据
+
+这些问题大多与Avalonia UI的特定实现方式有关，特别是与其他XAML框架（如WPF或UWP）的微小差异造成的。在Avalonia开发中，推荐经常参考[官方文档](https://docs.avaloniaui.net)以及示例项目。
+
 ## 通用操作流程
 
 1. **添加新项目流程**

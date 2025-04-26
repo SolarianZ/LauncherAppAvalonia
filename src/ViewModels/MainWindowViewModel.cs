@@ -254,6 +254,7 @@ namespace LauncherAppAvalonia.ViewModels
         public PathType Type { get; }
         public string? Name { get; }
         public string DisplayName => !string.IsNullOrEmpty(Name) ? Name : System.IO.Path.GetFileName(Path) ?? Path;
+        public string Icon => GetIcon();
 
         public LauncherItemViewModel(LauncherItem item)
         {

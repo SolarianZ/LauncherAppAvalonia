@@ -7,7 +7,7 @@
         mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="350"
         x:Class="LauncherAppAvalonia.Views.EditItemWindow"
         x:DataType="vm:EditItemViewModel"
-        Title="{Binding IsEditMode, Converter={x:Static BoolConverters.ToString}, ConverterParameter='编辑项目;添加项目'}"
+        Title="编辑项目"
         Width="400" Height="350"
         WindowStartupLocation="CenterOwner"
         CanResize="False">

@@ -15,7 +15,7 @@ namespace LauncherAppAvalonia.ViewModels
         private readonly ItemHandlerService _itemHandlerService;
         private readonly LocalizationService _localizationService;
         private readonly Window _parentWindow;
-        
+
         private string _path = string.Empty;
         private string _name = string.Empty;
         private PathType _selectedType = PathType.File;
@@ -60,6 +60,11 @@ namespace LauncherAppAvalonia.ViewModels
             set => SetProperty(ref _isCommandTipVisible, value);
         }
 
+        /// <summary>
+        /// 检查是否可以保存
+        /// </summary>
+        public bool CanSave => !string.IsNullOrEmpty(Path);
+
         public bool IsEditMode => _isEditMode;
 
         public Array PathTypes => Enum.GetValues(typeof(PathType));
@@ -70,7 +75,7 @@ namespace LauncherAppAvalonia.ViewModels
         public ICommand SelectFileCommand { get; }
         public ICommand SelectFolderCommand { get; }
 
-        public EditItemViewModel(DataService dataService, ItemHandlerService itemHandlerService, 
+        public EditItemViewModel(DataService dataService, ItemHandlerService itemHandlerService,
             LocalizationService localizationService, Window parentWindow)
         {
             _dataService = dataService;
@@ -79,7 +84,7 @@ namespace LauncherAppAvalonia.ViewModels
             _parentWindow = parentWindow;
 
             // 初始化命令
-            SaveCommand = new RelayCommand(SaveItem, CanSave);
+            SaveCommand = new RelayCommand(SaveItem, CanSaveInternal);
             CancelCommand = new RelayCommand(Cancel);
             SelectFileCommand = new RelayCommand(SelectFile);
             SelectFolderCommand = new RelayCommand(SelectFolder);
@@ -95,21 +100,15 @@ namespace LauncherAppAvalonia.ViewModels
         {
             _isEditMode = true;
             _editingItemIndex = index;
-            
+
             Path = item.Path;
             SelectedType = item.Type;
             Name = item.Name ?? string.Empty;
-            
+
             UpdateCommandTipVisibility();
         }
 
-        /// <summary>
-        /// 检查是否可以保存
-        /// </summary>
-        private bool CanSave()
-        {
-            return !string.IsNullOrWhiteSpace(Path);
-        }
+        private bool CanSaveInternal() => CanSave;
 
         /// <summary>
         /// 更新保存按钮状态
@@ -188,8 +187,8 @@ namespace LauncherAppAvalonia.ViewModels
                 return;
 
             var item = new LauncherItem(
-                Path, 
-                SelectedType, 
+                Path,
+                SelectedType,
                 string.IsNullOrWhiteSpace(Name) ? null : Name
             );
 

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -65,7 +66,8 @@ namespace LauncherAppAvalonia
             if (files == null) 
                 return;
 
-            ViewModel.HandleDroppedItem(files, this);
+            // 转换为List以匹配HandleDroppedItem的参数类型要求
+            ViewModel.HandleDroppedItem(files.ToList(), this);
         }
 
         /// <summary>
