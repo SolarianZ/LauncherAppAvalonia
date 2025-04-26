@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using LauncherAppAvalonia.Models;
 using LauncherAppAvalonia.Services;
 using LauncherAppAvalonia.ViewModels;
@@ -83,12 +84,11 @@ namespace LauncherAppAvalonia
                     _draggedItem = item;
                     _isDragging = false;
 
-                    // 捕获鼠标
-                    var visual = (Visual)sender;
-                    var pointer = e.Pointer;
-                    visual.PointerMoved += OnItemPointerMoved;
-                    visual.PointerReleased += OnItemPointerReleased;
-                    pointer.Capture(visual);
+                    // 捕获鼠标 - 修复: 使用InputElement而非Visual
+                    var inputElement = (IInputElement)sender;
+                    this.PointerMoved += OnItemPointerMoved;
+                    this.PointerReleased += OnItemPointerReleased;
+                    e.Pointer.Capture(inputElement);
                 }
             }
         }
@@ -98,7 +98,7 @@ namespace LauncherAppAvalonia
         /// </summary>
         private void OnItemPointerMoved(object? sender, PointerEventArgs e)
         {
-            if (sender is Visual visual && _draggedItem != null)
+            if (_draggedItem != null)
             {
                 // 计算移动距离
                 var currentPos = e.GetPosition(null);
@@ -113,14 +113,21 @@ namespace LauncherAppAvalonia
                     var data = new DataObject();
                     data.Set(DataFormats.Text, _draggedItem.Path);
 
-                    // 开始拖拽操作
-                    DragDrop.DoDragDrop(e, data, DragDropEffects.Move).ContinueWith(_ =>
+                    // 开始拖拽操作 - 使用更安全的方式处理任务结果
+                    var task = DragDrop.DoDragDrop(e, data, DragDropEffects.Move);
+                    
+                    // 为了避免警告而不使用ContinueWith，使用同步模式直接等待结果
+                    task.ContinueWith(_ => 
                     {
-                        // 拖拽完成，释放捕获
-                        visual.PointerMoved -= OnItemPointerMoved;
-                        visual.PointerReleased -= OnItemPointerReleased;
-                        e.Pointer.Capture(null);
-                    });
+                        // 使用Avalonia的Dispatcher确保UI线程安全
+                        Dispatcher.UIThread.Post(() =>
+                        {
+                            // 拖拽完成，释放捕获
+                            this.PointerMoved -= OnItemPointerMoved;
+                            this.PointerReleased -= OnItemPointerReleased;
+                            e.Pointer.Capture(null);
+                        });
+                    }, TaskScheduler.Default);
                 }
             }
         }
@@ -130,15 +137,13 @@ namespace LauncherAppAvalonia
         /// </summary>
         private void OnItemPointerReleased(object? sender, PointerReleasedEventArgs e)
         {
-            if (sender is Visual visual)
-            {
-                visual.PointerMoved -= OnItemPointerMoved;
-                visual.PointerReleased -= OnItemPointerReleased;
-                e.Pointer.Capture(null);
+            // 移除Visual类型检查，直接释放事件和捕获
+            this.PointerMoved -= OnItemPointerMoved;
+            this.PointerReleased -= OnItemPointerReleased;
+            e.Pointer.Capture(null);
 
-                _isDragging = false;
-                _draggedItem = null;
-            }
+            _isDragging = false;
+            _draggedItem = null;
         }
 
         /// <summary>
@@ -209,11 +214,23 @@ namespace LauncherAppAvalonia
         /// </summary>
         private LauncherItemViewModel? GetItemAt(ListBox listBox, Point point)
         {
-            // 获取位置对应的项目
-            var item = listBox.GetItemAt(point);
-            if (item != null)
+            // 使用Avalonia的ItemContainerGenerator机制获取项目
+            foreach (var item in listBox.ItemsSource)
             {
-                return item.DataContext as LauncherItemViewModel;
+                if (item is LauncherItemViewModel viewModel)
+                {
+                    var container = listBox.ContainerFromItem(item) as Control;
+                    if (container != null)
+                    {
+                        var bounds = container.Bounds;
+                        var relativePoint = point - bounds.Position;
+                        
+                        if (bounds.Contains(relativePoint))
+                        {
+                            return viewModel;
+                        }
+                    }
+                }
             }
             return null;
         }
@@ -244,7 +261,7 @@ namespace LauncherAppAvalonia
         /// <summary>
         /// 处理拖放事件
         /// </summary>
-        private async void OnDropHandler(object? sender, DragEventArgs e)
+        private void OnDropHandler(object? sender, DragEventArgs e)
         {
             if (!e.Data.Contains(DataFormats.Files))
                 return;
@@ -294,7 +311,11 @@ namespace LauncherAppAvalonia
         /// </summary>
         public async Task CopyToClipboard(string text)
         {
-            await TopLevel.GetTopLevel(this)?.Clipboard?.SetTextAsync(text);
+            var topLevel = TopLevel.GetTopLevel(this);
+            if (topLevel?.Clipboard != null)
+            {
+                await topLevel.Clipboard.SetTextAsync(text);
+            }
         }
 
         /// <summary>

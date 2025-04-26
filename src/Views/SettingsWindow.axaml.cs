@@ -9,7 +9,8 @@ namespace LauncherAppAvalonia.Views
 {
     public partial class SettingsWindow : Window
     {
-        private readonly SettingsViewModel _viewModel;
+        // 修改为可为null或使用required关键字
+        private SettingsViewModel? _viewModel;
 
         public SettingsWindow()
         {

@@ -36,6 +36,22 @@ namespace LauncherAppAvalonia.Models
         /// 启动时检查更新
         /// </summary>
         public bool CheckUpdateOnStart { get; set; } = true;
+
+        /// <summary>
+        /// 开机自启动配置
+        /// </summary>
+        public AutoLaunchConfig AutoLaunch { get; set; } = new AutoLaunchConfig();
+    }
+
+    /// <summary>
+    /// 自动启动配置类
+    /// </summary>
+    public class AutoLaunchConfig
+    {
+        /// <summary>
+        /// 是否启用开机自启动
+        /// </summary>
+        public bool Enabled { get; set; } = false;
     }
 
     /// <summary>

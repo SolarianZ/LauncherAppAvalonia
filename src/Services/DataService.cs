@@ -260,6 +260,51 @@ namespace LauncherAppAvalonia.Services
         }
 
         /// <summary>
+        /// 更新自动启动配置
+        /// </summary>
+        public void UpdateAutoLaunchConfig(bool enabled)
+        {
+            _config.AutoLaunch.Enabled = enabled;
+            SaveConfig();
+            
+            // 根据平台实现开机自启动配置
+            SetSystemAutoStart(enabled);
+        }
+
+        /// <summary>
+        /// 设置系统开机自启动
+        /// </summary>
+        private void SetSystemAutoStart(bool enabled)
+        {
+            try
+            {
+                // 不同平台有不同的实现方式，这里仅作为示例
+                if (OperatingSystem.IsWindows())
+                {
+                    // Windows平台使用注册表实现开机自启动
+                    Console.WriteLine($"Setting Windows auto start: {enabled}");
+                    // 实际实现需要使用Windows注册表API
+                }
+                else if (OperatingSystem.IsMacOS())
+                {
+                    // macOS平台使用LaunchAgent实现开机自启动
+                    Console.WriteLine($"Setting macOS auto start: {enabled}");
+                    // 实际实现需要创建或删除plist文件
+                }
+                else if (OperatingSystem.IsLinux())
+                {
+                    // Linux平台使用自启动文件实现
+                    Console.WriteLine($"Setting Linux auto start: {enabled}");
+                    // 实际实现需要创建或删除.desktop文件
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error setting auto start: {ex.Message}");
+            }
+        }
+
+        /// <summary>
         /// 获取数据存储位置
         /// </summary>
         public string GetDataFolderPath()

@@ -10,7 +10,8 @@ namespace LauncherAppAvalonia.Views
 {
     public partial class EditItemWindow : Window
     {
-        private readonly EditItemViewModel _viewModel;
+        // 修改为可为null或使用required关键字
+        private EditItemViewModel? _viewModel;
 
         public EditItemWindow()
         {
@@ -33,7 +34,8 @@ namespace LauncherAppAvalonia.Views
         /// </summary>
         public void SetEditMode(LauncherItem item, int index)
         {
-            _viewModel.SetEditMode(item, index);
+            // 添加空值检查以避免空引用异常
+            _viewModel?.SetEditMode(item, index);
         }
 
         /// <summary>
