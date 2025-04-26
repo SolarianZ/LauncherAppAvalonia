@@ -1,0 +1,123 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:LauncherAppAvalonia.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="600"
+        x:Class="LauncherAppAvalonia.MainWindow"
+        Title="Launcher"
+        Icon="/Assets/Icons/app-icon.ico"
+        Width="400" Height="600"
+        MinWidth="300" MinHeight="400"
+        WindowStartupLocation="CenterScreen"
+        DragDrop.AllowDrop="True">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- 头部区域 -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" Margin="8">
+            <!-- 搜索框 -->
+            <TextBox Grid.Column="0"
+                     Name="SearchBox"
+                     Margin="0,0,8,0"
+                     Watermark="搜索..."
+                     Text="{Binding SearchText}" />
+
+            <!-- 添加按钮 -->
+            <Button Grid.Column="1" 
+                    Margin="0,0,8,0"
+                    Content="+"
+                    FontSize="20"
+                    MinWidth="40"
+                    HorizontalContentAlignment="Center"
+                    Command="{Binding AddItemCommand}" />
+            
+            <!-- 设置按钮 -->
+            <Button Grid.Column="2" 
+                    Content="⚙"
+                    FontSize="20"
+                    MinWidth="40"
+                    HorizontalContentAlignment="Center"
+                    Command="{Binding OpenSettingsCommand}" />
+        </Grid>
+
+        <!-- 列表区域 -->
+        <Border Grid.Row="1" Margin="8,0,8,8" 
+                BorderBrush="{DynamicResource SystemBaseMediumLowColor}" 
+                BorderThickness="1"
+                CornerRadius="4">
+
+            <Grid>
+                <!-- 空列表消息 -->
+                <TextBlock Text="点击 + 按钮添加新的项目"
+                           IsVisible="{Binding FilteredItems.Count, Converter={x:Static ObjectConverters.IsZero}}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource SystemBaseMediumColor}" />
+                
+                <!-- 项目列表 -->
+                <ListBox Items="{Binding FilteredItems}"
+                         Background="Transparent"
+                         SelectedItem="{Binding SelectedItem}"
+                         SelectionMode="Single"
+                         DoubleTapped="OnItemDoubleTapped">
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="Padding" Value="8" />
+                            <Setter Property="Margin" Value="0,2" />
+                            <Setter Property="CornerRadius" Value="4" />
+                        </Style>
+                    </ListBox.Styles>
+                    
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="Auto,*">
+                                <!-- 项目图标 -->
+                                <TextBlock Grid.Column="0" 
+                                           Text="{Binding GetIcon()}" 
+                                           FontSize="24"
+                                           Margin="0,0,12,0"
+                                           VerticalAlignment="Center" />
+                                
+                                <!-- 项目名称 -->
+                                <TextBlock Grid.Column="1" 
+                                           Text="{Binding DisplayName}" 
+                                           VerticalAlignment="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="打开" 
+                                      Command="{Binding #MainWindow.ViewModel.OpenItemCommand}" 
+                                      CommandParameter="{Binding #MainWindow.ViewModel.SelectedItem}" />
+                            <MenuItem Header="在文件夹中显示" 
+                                      Command="{Binding #MainWindow.ViewModel.ShowInFolderCommand}" 
+                                      CommandParameter="{Binding #MainWindow.ViewModel.SelectedItem}" />
+                            <MenuItem Header="复制路径" 
+                                      Command="{Binding #MainWindow.ViewModel.CopyPathCommand}" 
+                                      CommandParameter="{Binding #MainWindow.ViewModel.SelectedItem}" />
+                            <Separator />
+                            <MenuItem Header="编辑" 
+                                      Command="{Binding #MainWindow.ViewModel.EditItemCommand}" 
+                                      CommandParameter="{Binding #MainWindow.ViewModel.SelectedItem}" />
+                            <MenuItem Header="移除" 
+                                      Command="{Binding #MainWindow.ViewModel.RemoveItemCommand}" 
+                                      CommandParameter="{Binding #MainWindow.ViewModel.SelectedItem}" />
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                </ListBox>
+            </Grid>
+        </Border>
+        
+        <!-- 底部状态区域 -->
+        <StackPanel Grid.Row="2" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Center"
+                    Margin="8">
+            <TextBlock Text="按ESC关闭，按F12打开开发者工具" 
+                       Foreground="{DynamicResource SystemBaseMediumColor}"
+                       FontSize="12" />
+        </StackPanel>
+    </Grid>
+</Window>
