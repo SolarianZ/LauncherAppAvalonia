@@ -18,7 +18,7 @@
 
     <DockPanel>
         <Grid DockPanel.Dock="Top" ColumnDefinitions="30, *, 30" ShowGridLines="True">
-            <Button Grid.Column="0" Content="➕" Padding="0"
+            <Button Grid.Column="0" Content="＋" Padding="0"
                     Command="{Binding AddItemCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
