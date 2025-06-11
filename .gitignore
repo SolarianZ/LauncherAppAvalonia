@@ -36,11 +36,6 @@ ScaffoldingReadMe.txt
 # NuGet Symbol Packages
 *.snupkg
 
-# Others
-~$*
-*~
-CodeCoverage/
-
 # MSBuild Binary and Structured Log
 *.binlog
 
@@ -56,3 +51,9 @@ nunit-*.xml
 # IDE
 .idea/
 .vs/
+
+# Others
+.DS_Store
+~$*
+*~
+CodeCoverage/
