@@ -55,8 +55,12 @@
                     <MenuItem Header="复制路径"
                               Command="{Binding CopyItemPathCommand}"
                               CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
-                    <MenuItem Header="编辑" />
-                    <MenuItem Header="移除" />
+                    <MenuItem Header="编辑"
+                              Command="{Binding EditItemCommand}"
+                              CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
+                    <MenuItem Header="移除"
+                              Command="{Binding RemoveItemCommand}"
+                              CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
                 </ContextMenu>
             </ListBox.ContextMenu>
 

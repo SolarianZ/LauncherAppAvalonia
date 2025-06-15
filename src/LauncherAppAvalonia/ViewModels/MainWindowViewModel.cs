@@ -14,7 +14,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
 
     // For previewer use
-    // internal MainWindowViewModel() { }
+    internal MainWindowViewModel() { }
 
     public MainWindowViewModel(DataService dataService)
     {

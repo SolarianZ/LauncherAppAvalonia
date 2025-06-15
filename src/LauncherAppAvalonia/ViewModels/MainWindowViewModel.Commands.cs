@@ -17,8 +17,8 @@ public partial class MainWindowViewModel
 {
     public ICommand AddItemCommand { get; private set; } = null!;
     public ICommand OpenSettingsCommand { get; private set; } = null!;
-    // public ICommand EditItemCommand { get; private set; } = null!;
-    // public ICommand RemoveItemCommand { get; private set;} = null!;
+    public ICommand EditItemCommand { get; private set; } = null!;
+    public ICommand RemoveItemCommand { get; private set;} = null!;
     public ICommand OpenItemCommand { get; private set; } = null!;
     public ICommand ShowItemInFolderCommand { get; private set; } = null!;
     public ICommand CopyItemPathCommand { get; private set; } = null!;
@@ -28,6 +28,8 @@ public partial class MainWindowViewModel
     {
         AddItemCommand = new RelayCommand<Control?>(ExecuteAddItemCommand, CanExecuteAddItemCommand);
         OpenSettingsCommand = new RelayCommand<Control?>(ExecuteOpenSettingsCommand, CanExecuteOpenSettingsCommand);
+        EditItemCommand = new RelayCommand<LauncherItemViewModel?>(ExecuteEditItemCommand, CanExecuteEditItemCommand);
+        RemoveItemCommand = new RelayCommand<LauncherItemViewModel?>(ExecuteRemoveItemCommand, CanExecuteRemoveItemCommand);
         OpenItemCommand = new RelayCommand<LauncherItemViewModel?>(ExecuteOpenItemCommand, CanExecuteOpenItemCommand);
         ShowItemInFolderCommand = new RelayCommand<LauncherItemViewModel?>(ExecuteShowItemInFolderCommand, CanExecuteShowItemInFolderCommand);
         CopyItemPathCommand = new RelayCommand<LauncherItemViewModel?>(ExecuteCopyItemPathCommand, CanExecuteCopyItemPathCommand);
@@ -55,6 +57,38 @@ public partial class MainWindowViewModel
     {
         Debug.Assert(addButton != null);
         FlyoutBase.ShowAttachedFlyout(addButton);
+    }
+
+    #endregion
+
+
+    #region EditItemCommand
+
+    private bool CanExecuteEditItemCommand(LauncherItemViewModel? itemVM)
+    {
+        return itemVM != null;
+    }
+
+    private void ExecuteEditItemCommand(LauncherItemViewModel? itemVM)
+    {
+        Debug.Assert(itemVM != null);
+        Debug.WriteLine($"TODO Edit Item: [{itemVM.Type}] {itemVM.Path}");
+    }
+
+    #endregion
+
+
+    #region RemoveItemCommand
+
+    private bool CanExecuteRemoveItemCommand(LauncherItemViewModel? itemVM)
+    {
+        return itemVM != null;
+    }
+
+    private void ExecuteRemoveItemCommand(LauncherItemViewModel? itemVM)
+    {
+        Debug.Assert(itemVM != null);
+        Debug.WriteLine($"TODO Remove Item: [{itemVM.Type}] {itemVM.Path}");
     }
 
     #endregion

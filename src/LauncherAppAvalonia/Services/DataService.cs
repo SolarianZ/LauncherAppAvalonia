@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -68,7 +69,7 @@ public class DataService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error loading items: {ex.Message}");
+            Debug.WriteLine($"Error loading items: {ex.Message}");
         }
     }
 
@@ -82,7 +83,7 @@ public class DataService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error saving items: {ex.Message}");
+            Debug.WriteLine($"Error saving items: {ex.Message}");
         }
     }
 
@@ -122,7 +123,7 @@ public class DataService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error loading settings: {ex.Message}");
+            Debug.WriteLine($"Error loading settings: {ex.Message}");
         }
     }
 
@@ -136,7 +137,7 @@ public class DataService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error saving settings: {ex.Message}");
+            Debug.WriteLine($"Error saving settings: {ex.Message}");
         }
     }
 
