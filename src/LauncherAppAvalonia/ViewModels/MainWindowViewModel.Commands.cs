@@ -114,7 +114,8 @@ public partial class MainWindowViewModel
                 UseShellExecute = true
             });
         }
-        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ||
+                 RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
         {
             Process.Start(new ProcessStartInfo("xdg-open", $"\"{filePath}\"")
             {
@@ -143,7 +144,8 @@ public partial class MainWindowViewModel
                 UseShellExecute = true
             });
         }
-        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ||
+                 RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
         {
             Process.Start(new ProcessStartInfo("xdg-open", $"\"{folderPath}\"")
             {
@@ -172,7 +174,8 @@ public partial class MainWindowViewModel
                 UseShellExecute = true
             });
         }
-        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ||
+                 RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
         {
             Process.Start(new ProcessStartInfo("xdg-open", url)
             {
@@ -195,16 +198,16 @@ public partial class MainWindowViewModel
 
             Process.Start(new ProcessStartInfo("cmd.exe", command)
             {
-                UseShellExecute = false,
-                CreateNoWindow = true
+                UseShellExecute = false
             });
         }
-        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ||
+                 RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ||
+                 RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
         {
             Process.Start(new ProcessStartInfo("/bin/bash", $"-c \"{command}\"")
             {
-                UseShellExecute = false,
-                CreateNoWindow = true
+                UseShellExecute = false
             });
         }
         else
@@ -245,7 +248,8 @@ public partial class MainWindowViewModel
                 ShowItemInFolder_Windows(itemVM.Path, isFolder);
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 ShowItemInFolder_OSX(itemVM.Path, isFolder);
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ||
+                     RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
                 ShowItemInFolder_UNIX(itemVM.Path, isFolder);
             else
                 Debug.WriteLine($"Unsupported OS for showing item in folder: {RuntimeInformation.OSDescription}");
