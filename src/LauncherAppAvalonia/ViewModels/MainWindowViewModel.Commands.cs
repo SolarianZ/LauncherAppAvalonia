@@ -71,7 +71,146 @@ public partial class MainWindowViewModel
     {
         Debug.Assert(itemVM != null);
 
-        Debug.WriteLine($"TODO Open Item: [{itemVM.Type}] {itemVM.Path}");
+        try
+        {
+            switch (itemVM.Type)
+            {
+                case LauncherItemType.File:
+                    OpenFile(itemVM.Path);
+                    break;
+                case LauncherItemType.Folder:
+                    OpenFolder(itemVM.Path);
+                    break;
+                case LauncherItemType.Url:
+                    OpenUrl(itemVM.Path);
+                    break;
+                case LauncherItemType.Command:
+                    OpenCommand(itemVM.Path);
+                    break;
+                default:
+                    Debug.WriteLine("Unsupported item type for opening: " + itemVM.Type);
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error opening item: {ex.Message}");
+        }
+    }
+
+    private void OpenFile(string filePath)
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            Process.Start(new ProcessStartInfo(filePath)
+            {
+                UseShellExecute = true
+            });
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            Process.Start(new ProcessStartInfo("open", $"\"{filePath}\"")
+            {
+                UseShellExecute = true
+            });
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+        {
+            Process.Start(new ProcessStartInfo("xdg-open", $"\"{filePath}\"")
+            {
+                UseShellExecute = true
+            });
+        }
+        else
+        {
+            Debug.WriteLine($"Unsupported OS for opening file: {RuntimeInformation.OSDescription}");
+        }
+    }
+
+    private void OpenFolder(string folderPath)
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            Process.Start(new ProcessStartInfo("explorer.exe", $"\"{folderPath}\"")
+            {
+                UseShellExecute = true
+            });
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            Process.Start(new ProcessStartInfo("open", $"\"{folderPath}\"")
+            {
+                UseShellExecute = true
+            });
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+        {
+            Process.Start(new ProcessStartInfo("xdg-open", $"\"{folderPath}\"")
+            {
+                UseShellExecute = true
+            });
+        }
+        else
+        {
+            Debug.WriteLine($"Unsupported OS for opening folder: {RuntimeInformation.OSDescription}");
+        }
+    }
+
+    private void OpenUrl(string url)
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            Process.Start(new ProcessStartInfo(url)
+            {
+                UseShellExecute = true
+            });
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            Process.Start(new ProcessStartInfo("open", url)
+            {
+                UseShellExecute = true
+            });
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+        {
+            Process.Start(new ProcessStartInfo("xdg-open", url)
+            {
+                UseShellExecute = true
+            });
+        }
+        else
+        {
+            Debug.WriteLine($"Unsupported OS for opening URL: {RuntimeInformation.OSDescription}");
+        }
+    }
+
+    private void OpenCommand(string command)
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            if (!command.StartsWith("/C", StringComparison.OrdinalIgnoreCase) &&
+                !command.StartsWith("/K", StringComparison.OrdinalIgnoreCase))
+                command = $"/K {command}";
+
+            Process.Start(new ProcessStartInfo("cmd.exe", command)
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true
+            });
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+        {
+            Process.Start(new ProcessStartInfo("/bin/bash", $"-c \"{command}\"")
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true
+            });
+        }
+        else
+        {
+            Debug.WriteLine($"Unsupported OS for executing command: {RuntimeInformation.OSDescription}");
+        }
     }
 
     #endregion
