@@ -41,7 +41,7 @@ LauncherAppAvalonia/src/
 3. 分离关注点，将不同功能模块化处理。
 4. 使用异步编程处理IO操作，避免阻塞主线程。
 5. 避免代码重复，将常用功能提取为模块或共享函数。
-6. 保持代码的一致性，不要在项目中维护多个具有相同功能的文件。
+6. 遵守Avalonia UI推荐的最佳实践。
 7. 打印日志时使用英文，不需要多语言支持，避免乱码。
 
 关注Avalonia UI的版本变更：https://docs.avaloniaui.net/docs/stay-up-to-date/upgrade-from-0.10

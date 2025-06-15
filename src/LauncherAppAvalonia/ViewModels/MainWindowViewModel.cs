@@ -1,6 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using LauncherAppAvalonia.Models;
+using LauncherAppAvalonia.Services;
 
 namespace LauncherAppAvalonia.ViewModels;
 
@@ -12,24 +14,19 @@ public partial class MainWindowViewModel : ViewModelBase
     public ICommand OpenItemCommand { get; } = new OpenItemCommand();
     public ObservableCollection<LauncherItemViewModel> FilteredItems { get; } = new();
 
-    public MainWindowViewModel()
+
+    private readonly DataService _dataService;
+
+
+    public MainWindowViewModel(DataService dataService)
     {
-        // 临时测试数据
-        FilteredItems.Add(new LauncherItemViewModel(new LauncherItem(LauncherItemType.File, "D:\\.GamingRoot", null)));
-        FilteredItems.Add(new LauncherItemViewModel(new LauncherItem(LauncherItemType.Folder, "D:\\Projects", null)));
-        FilteredItems.Add(new LauncherItemViewModel(new LauncherItem(LauncherItemType.Url, "https:www.baidu.com", null)));
-        FilteredItems.Add(new LauncherItemViewModel(new LauncherItem(LauncherItemType.Command, "echo Hello", null)));
-        FilteredItems.Add(new LauncherItemViewModel(new LauncherItem(LauncherItemType.File, "D:\\.GamingRoot", null)));
-        FilteredItems.Add(new LauncherItemViewModel(new LauncherItem(LauncherItemType.Folder, "D:\\Projects", null)));
-        FilteredItems.Add(new LauncherItemViewModel(new LauncherItem(LauncherItemType.Url, "https:www.baidu.com", null)));
-        FilteredItems.Add(new LauncherItemViewModel(new LauncherItem(LauncherItemType.Command, "echo Hello", null)));
-        FilteredItems.Add(new LauncherItemViewModel(new LauncherItem(LauncherItemType.File, "D:\\.GamingRoot", null)));
-        FilteredItems.Add(new LauncherItemViewModel(new LauncherItem(LauncherItemType.Folder, "D:\\Projects", null)));
-        FilteredItems.Add(new LauncherItemViewModel(new LauncherItem(LauncherItemType.Url, "https:www.baidu.com", null)));
-        FilteredItems.Add(new LauncherItemViewModel(new LauncherItem(LauncherItemType.Command, "echo Hello", null)));
-        FilteredItems.Add(new LauncherItemViewModel(new LauncherItem(LauncherItemType.File, "D:\\.GamingRoot", null)));
-        FilteredItems.Add(new LauncherItemViewModel(new LauncherItem(LauncherItemType.Folder, "D:\\Projects", null)));
-        FilteredItems.Add(new LauncherItemViewModel(new LauncherItem(LauncherItemType.Url, "https:www.baidu.com", null)));
-        FilteredItems.Add(new LauncherItemViewModel(new LauncherItem(LauncherItemType.Command, "echo Hello", null)));
+        _dataService = dataService;
+
+        // 初始化数据
+        List<LauncherItem> items = _dataService.GetItems();
+        foreach (LauncherItem item in items)
+        {
+            FilteredItems.Add(new LauncherItemViewModel(item));
+        }
     }
 }
