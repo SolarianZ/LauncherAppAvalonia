@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 using LauncherAppAvalonia.Models;
 using LauncherAppAvalonia.Services;
 
@@ -8,10 +7,6 @@ namespace LauncherAppAvalonia.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    public ICommand OpenSettingsCommand { get; } = new OpenSettingsCommand();
-    public ICommand AddItemCommand { get; } = new AddItemCommand();
-
-    public ICommand OpenItemCommand { get; } = new OpenItemCommand();
     public ObservableCollection<LauncherItemViewModel> FilteredItems { get; } = new();
 
 
@@ -28,5 +23,7 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             FilteredItems.Add(new LauncherItemViewModel(item));
         }
+
+        InitializeCommands();
     }
 }
