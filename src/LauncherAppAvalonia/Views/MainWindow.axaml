@@ -52,7 +52,9 @@
                     <MenuItem Header="在文件夹中显示"
                               Command="{Binding ShowItemInFolderCommand}"
                               CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
-                    <MenuItem Header="复制路径" />
+                    <MenuItem Header="复制路径"
+                              Command="{Binding CopyItemPathCommand}"
+                              CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
                     <MenuItem Header="编辑" />
                     <MenuItem Header="移除" />
                 </ContextMenu>

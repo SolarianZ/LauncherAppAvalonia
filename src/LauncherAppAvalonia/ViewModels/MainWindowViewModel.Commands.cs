@@ -3,6 +3,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Primitives;
+using Avalonia.Input.Platform;
 using CommunityToolkit.Mvvm.Input;
 using LauncherAppAvalonia.Models;
 
@@ -10,20 +15,49 @@ namespace LauncherAppAvalonia.ViewModels;
 
 public partial class MainWindowViewModel
 {
-    public ICommand OpenSettingsCommand { get; } = new OpenSettingsCommand();
-    public ICommand AddItemCommand { get; } = new AddItemCommand();
-    // public ICommand EditItemCommand { get; } = new EditItemCommand();
-    // public ICommand RemoveItemCommand { get; } = new RemoveItemCommand();
+    public ICommand AddItemCommand { get; private set; } = null!;
+    public ICommand OpenSettingsCommand { get; private set; } = null!;
+    // public ICommand EditItemCommand { get; private set; } = null!;
+    // public ICommand RemoveItemCommand { get; private set;} = null!;
     public ICommand OpenItemCommand { get; private set; } = null!;
     public ICommand ShowItemInFolderCommand { get; private set; } = null!;
-    // public ICommand CopyItemPathCommand { get; } = new CopyItemPathCommand();
+    public ICommand CopyItemPathCommand { get; private set; } = null!;
 
 
     private void InitializeCommands()
     {
+        AddItemCommand = new RelayCommand<Control?>(ExecuteAddItemCommand, CanExecuteAddItemCommand);
+        OpenSettingsCommand = new RelayCommand<Control?>(ExecuteOpenSettingsCommand, CanExecuteOpenSettingsCommand);
         OpenItemCommand = new RelayCommand<LauncherItemViewModel?>(ExecuteOpenItemCommand, CanExecuteOpenItemCommand);
         ShowItemInFolderCommand = new RelayCommand<LauncherItemViewModel?>(ExecuteShowItemInFolderCommand, CanExecuteShowItemInFolderCommand);
+        CopyItemPathCommand = new RelayCommand<LauncherItemViewModel?>(ExecuteCopyItemPathCommand, CanExecuteCopyItemPathCommand);
     }
+
+
+    #region AddItemCommand
+
+    private bool CanExecuteAddItemCommand(Control? addButton) => addButton != null;
+
+    private void ExecuteAddItemCommand(Control? addButton)
+    {
+        Debug.Assert(addButton != null);
+        FlyoutBase.ShowAttachedFlyout(addButton);
+    }
+
+    #endregion
+
+
+    #region OpenSettingsCommand
+
+    private bool CanExecuteOpenSettingsCommand(Control? addButton) => addButton != null;
+
+    private void ExecuteOpenSettingsCommand(Control? addButton)
+    {
+        Debug.Assert(addButton != null);
+        FlyoutBase.ShowAttachedFlyout(addButton);
+    }
+
+    #endregion
 
 
     #region OpenItemCommand
@@ -106,6 +140,41 @@ public partial class MainWindowViewModel
         {
             UseShellExecute = true
         });
+    }
+
+    #endregion
+
+
+    #region CopyItemPathCommand
+
+    private bool CanExecuteCopyItemPathCommand(LauncherItemViewModel? itemVM)
+    {
+        return itemVM != null;
+    }
+
+
+    private void ExecuteCopyItemPathCommand(LauncherItemViewModel? itemVM)
+    {
+        Debug.Assert(itemVM != null);
+
+        try
+        {
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                IClipboard? clipboard = TopLevel.GetTopLevel(desktop.MainWindow)?.Clipboard;
+                if (clipboard != null)
+                {
+                    clipboard.SetTextAsync(itemVM.Path);
+                    return;
+                }
+            }
+
+            Debug.WriteLine("Clipboard service is not available.");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error copying item path: {ex.Message}");
+        }
     }
 
     #endregion

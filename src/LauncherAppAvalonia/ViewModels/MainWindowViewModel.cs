@@ -13,6 +13,9 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly DataService _dataService;
 
 
+    // For previewer use
+    // internal MainWindowViewModel() { }
+
     public MainWindowViewModel(DataService dataService)
     {
         _dataService = dataService;
