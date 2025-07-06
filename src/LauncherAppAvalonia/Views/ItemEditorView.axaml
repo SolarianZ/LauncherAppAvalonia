@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:LauncherAppAvalonia.ViewModels"
              xmlns:viewModels="clr-namespace:LauncherAppAvalonia.ViewModels"
+             xmlns:converters="using:LauncherAppAvalonia.Converters"
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="400"
              x:Class="LauncherAppAvalonia.Views.ItemEditorView"
              x:DataType="viewModels:ItemEditorViewModel"
@@ -13,6 +14,10 @@
         <vm:ItemEditorViewModel />
     </Design.DataContext>
 
+    <UserControl.Resources>
+        <converters:LauncherItemTypeToStringConverter x:Key="LauncherItemTypeNameConverter" />
+    </UserControl.Resources>
+
     <Grid RowDefinitions="Auto,Auto,*,Auto,Auto">
         <!-- Title -->
         <Panel Background="Gray" Height="28">
@@ -21,13 +26,34 @@
 
         <!-- Item Content -->
         <StackPanel Grid.Row="1" Margin="8" Spacing="8">
-            <TextBox Name="PathTextBox" Watermark="输入路径、网址或命令" Height="80" />
-            <TextBox Name="NameTextBox" Watermark="输入显示名称（可选）" />
-            <ComboBox Name="TypeComboBox" ToolTip.Tip="选择项目类型" SelectedIndex="0" HorizontalAlignment="Stretch">
-                <ComboBoxItem>File</ComboBoxItem>
-                <ComboBoxItem>Folder</ComboBoxItem>
-                <ComboBoxItem>Url</ComboBoxItem>
-                <ComboBoxItem>Command</ComboBoxItem>
+            <TextBox Text="{Binding Path}" Watermark="输入路径、网址或命令" Height="80" />
+            <TextBox Text="{Binding Name}" Watermark="输入显示名称（可选）" />
+            <!-- 这样创建的ComboBoxItem宽度与所属ComboBox一致
+            <ComboBox HorizontalAlignment="Stretch" SelectedIndex="0">
+                <ComboBoxItem>Test 1</ComboBoxItem>
+                <ComboBoxItem>Test 2</ComboBoxItem>
+            </ComboBox>
+            -->
+
+            <!-- TODO FIXME: 使用ItemsSource创建的ComboBoxItem宽度跟随其内容，没有跟随所属ComboBox -->
+            <ComboBox ItemsSource="{Binding ItemTypes}"
+                      SelectedItem="{Binding Type}"
+                      HorizontalAlignment="Stretch"
+                      ToolTip.Tip="选择项目类型">
+
+                <!-- 这段代码可以修复ComboBoxItem的宽度问题，但会导致ComboBoxItem的鼠标悬停指示等样式消失
+                <ComboBox.ItemContainerTheme>
+                    <ControlTheme TargetType="ComboBoxItem">
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="Padding" Value="4" />
+                    </ControlTheme>
+                </ComboBox.ItemContainerTheme>
+                -->
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource LauncherItemTypeNameConverter}}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
             </ComboBox>
         </StackPanel>
 
@@ -51,7 +77,7 @@
             <!-- Spacing -->
             <Panel Grid.Column="2" />
             <!-- Right -->
-            <Button Grid.Column="3" Name="CancelButton">取消</Button>
+            <Button Grid.Column="3" Command="{Binding SetInvisibleCommand}">取消</Button>
             <Button Grid.Column="4" Name="SaveButton">保存</Button>
         </Grid>
     </Grid>

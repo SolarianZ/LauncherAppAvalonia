@@ -17,10 +17,12 @@ public partial class MainWindowViewModel
     #region AddItemCommand
 
     [RelayCommand]
-    private void AddItem(Control? addButton)
+    private void AddItem()
     {
-        Debug.Assert(addButton != null);
-        FlyoutBase.ShowAttachedFlyout(addButton);
+        Debug.Assert(IsItemEditorViewVisible == false);
+        
+        IsItemEditorViewVisible = true;
+        ItemEditorViewModel.SetItem(null);
     }
 
     #endregion
@@ -44,7 +46,10 @@ public partial class MainWindowViewModel
     private void EditItem(LauncherItemViewModel? itemVM)
     {
         Debug.Assert(itemVM != null);
-        Debug.WriteLine($"TODO Edit Item: [{itemVM.Type}] {itemVM.Path}");
+        Debug.Assert(IsItemEditorViewVisible == false);
+
+        IsItemEditorViewVisible = true;
+        ItemEditorViewModel.SetItem(itemVM.LauncherItem);
     }
 
     #endregion

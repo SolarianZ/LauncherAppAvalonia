@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using LauncherAppAvalonia.Models;
 using LauncherAppAvalonia.Services;
 
@@ -8,9 +9,10 @@ namespace LauncherAppAvalonia.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
     public ObservableCollection<LauncherItemViewModel> FilteredItems { get; } = new();
-
     public ItemEditorViewModel ItemEditorViewModel { get; } = new();
 
+    [ObservableProperty]
+    private bool _isItemEditorViewVisible;
     private readonly DataService _dataService;
 
 

@@ -27,9 +27,6 @@
                         CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                         HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                    <Button.Flyout>
-                        <Flyout>TODO 尚未实现</Flyout>
-                    </Button.Flyout>
                 </Button>
                 <TextBox Grid.Column="1" Name="SearchTextBox" Watermark="search items" />
                 <Button Grid.Column="2" Content="⚙" Padding="0"
@@ -86,16 +83,9 @@
         </DockPanel>
 
         <!-- Item Editor -->
-        <!--<Border Background="#7F000000" IsVisible="{Binding IsItemEditorVisible}">
-            <views:ItemEditorView DataContext="{Binding EditorViewModel}"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                  Width="300" />-->
-        <Border Background="#7F000000" >
+        <Border Background="#7F000000" IsVisible="{Binding IsItemEditorViewVisible}">
             <views:ItemEditorView DataContext="{Binding ItemEditorViewModel}"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                  Width="300" />
+                                  HorizontalAlignment="Center" VerticalAlignment="Center" Width="300" />
         </Border>
 
     </Grid>

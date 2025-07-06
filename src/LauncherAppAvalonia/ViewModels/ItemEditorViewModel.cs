@@ -1,19 +1,36 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LauncherAppAvalonia.Models;
 
 namespace LauncherAppAvalonia.ViewModels;
 
 public partial class ItemEditorViewModel : ViewModelBase
 {
+    public LauncherItemType[] ItemTypes { get; } = Enum.GetValues<LauncherItemType>();
+
     [ObservableProperty]
     private string? _path = string.Empty;
+
+    [ObservableProperty]
+    private string? _name = string.Empty;
+
+    [ObservableProperty]
+    private LauncherItemType _type = LauncherItemType.Command;
+
+
+    public void SetItem(LauncherItem? item)
+    {
+        Path = item?.Path;
+        Name = item?.Name;
+        Type = item?.Type ?? LauncherItemType.Command;
+    }
 
 
     #region Commands
@@ -54,6 +71,24 @@ public partial class ItemEditorViewModel : ViewModelBase
             Path = folders[0].Path.LocalPath;
     }
 
+    [RelayCommand]
+    private void SetInvisible()
+    {
+        // TODO 隐藏界面
+    }
+
+    [RelayCommand]
+    private async Task SaveAndSetInvisibleAsync()
+    {
+        // 隐藏界面
+        SetInvisible();
+
+        // TODO 保存
+    }
+
+    #endregion
+
+
     private static TopLevel? GetTopLevel()
     {
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -61,6 +96,4 @@ public partial class ItemEditorViewModel : ViewModelBase
 
         return null;
     }
-
-    #endregion
 }
