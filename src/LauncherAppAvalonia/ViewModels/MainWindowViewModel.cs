@@ -9,12 +9,10 @@ public partial class MainWindowViewModel : ViewModelBase
 {
     public ObservableCollection<LauncherItemViewModel> FilteredItems { get; } = new();
 
+    public ItemEditorViewModel ItemEditorViewModel { get; } = new();
 
     private readonly DataService _dataService;
 
-
-    // For previewer use
-    internal MainWindowViewModel() { }
 
     public MainWindowViewModel(DataService dataService)
     {
@@ -26,7 +24,5 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             FilteredItems.Add(new LauncherItemViewModel(item));
         }
-
-        InitializeCommands();
     }
 }

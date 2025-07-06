@@ -57,3 +57,4 @@ nunit-*.xml
 ~$*
 *~
 CodeCoverage/
+src/LauncherAppAvalonia.sln.DotSettings.user

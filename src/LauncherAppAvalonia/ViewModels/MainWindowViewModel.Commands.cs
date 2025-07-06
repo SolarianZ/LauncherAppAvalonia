@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -15,32 +14,10 @@ namespace LauncherAppAvalonia.ViewModels;
 
 public partial class MainWindowViewModel
 {
-    public ICommand AddItemCommand { get; private set; } = null!;
-    public ICommand OpenSettingsCommand { get; private set; } = null!;
-    public ICommand EditItemCommand { get; private set; } = null!;
-    public ICommand RemoveItemCommand { get; private set;} = null!;
-    public ICommand OpenItemCommand { get; private set; } = null!;
-    public ICommand ShowItemInFolderCommand { get; private set; } = null!;
-    public ICommand CopyItemPathCommand { get; private set; } = null!;
-
-
-    private void InitializeCommands()
-    {
-        AddItemCommand = new RelayCommand<Control?>(ExecuteAddItemCommand, CanExecuteAddItemCommand);
-        OpenSettingsCommand = new RelayCommand<Control?>(ExecuteOpenSettingsCommand, CanExecuteOpenSettingsCommand);
-        EditItemCommand = new RelayCommand<LauncherItemViewModel?>(ExecuteEditItemCommand, CanExecuteEditItemCommand);
-        RemoveItemCommand = new RelayCommand<LauncherItemViewModel?>(ExecuteRemoveItemCommand, CanExecuteRemoveItemCommand);
-        OpenItemCommand = new RelayCommand<LauncherItemViewModel?>(ExecuteOpenItemCommand, CanExecuteOpenItemCommand);
-        ShowItemInFolderCommand = new RelayCommand<LauncherItemViewModel?>(ExecuteShowItemInFolderCommand, CanExecuteShowItemInFolderCommand);
-        CopyItemPathCommand = new RelayCommand<LauncherItemViewModel?>(ExecuteCopyItemPathCommand, CanExecuteCopyItemPathCommand);
-    }
-
-
     #region AddItemCommand
 
-    private bool CanExecuteAddItemCommand(Control? addButton) => addButton != null;
-
-    private void ExecuteAddItemCommand(Control? addButton)
+    [RelayCommand]
+    private void AddItem(Control? addButton)
     {
         Debug.Assert(addButton != null);
         FlyoutBase.ShowAttachedFlyout(addButton);
@@ -51,9 +28,8 @@ public partial class MainWindowViewModel
 
     #region OpenSettingsCommand
 
-    private bool CanExecuteOpenSettingsCommand(Control? addButton) => addButton != null;
-
-    private void ExecuteOpenSettingsCommand(Control? addButton)
+    [RelayCommand]
+    private void OpenSettings(Control? addButton)
     {
         Debug.Assert(addButton != null);
         FlyoutBase.ShowAttachedFlyout(addButton);
@@ -64,12 +40,8 @@ public partial class MainWindowViewModel
 
     #region EditItemCommand
 
-    private bool CanExecuteEditItemCommand(LauncherItemViewModel? itemVM)
-    {
-        return itemVM != null;
-    }
-
-    private void ExecuteEditItemCommand(LauncherItemViewModel? itemVM)
+    [RelayCommand]
+    private void EditItem(LauncherItemViewModel? itemVM)
     {
         Debug.Assert(itemVM != null);
         Debug.WriteLine($"TODO Edit Item: [{itemVM.Type}] {itemVM.Path}");
@@ -80,12 +52,8 @@ public partial class MainWindowViewModel
 
     #region RemoveItemCommand
 
-    private bool CanExecuteRemoveItemCommand(LauncherItemViewModel? itemVM)
-    {
-        return itemVM != null;
-    }
-
-    private void ExecuteRemoveItemCommand(LauncherItemViewModel? itemVM)
+    [RelayCommand]
+    private void RemoveItem(LauncherItemViewModel? itemVM)
     {
         Debug.Assert(itemVM != null);
         Debug.WriteLine($"TODO Remove Item: [{itemVM.Type}] {itemVM.Path}");
@@ -96,12 +64,8 @@ public partial class MainWindowViewModel
 
     #region OpenItemCommand
 
-    private bool CanExecuteOpenItemCommand(LauncherItemViewModel? itemVM)
-    {
-        return itemVM != null;
-    }
-
-    private void ExecuteOpenItemCommand(LauncherItemViewModel? itemVM)
+    [RelayCommand]
+    private void OpenItem(LauncherItemViewModel? itemVM)
     {
         Debug.Assert(itemVM != null);
 
@@ -255,7 +219,7 @@ public partial class MainWindowViewModel
 
     #region ShowItemInFolderCommand
 
-    private bool CanExecuteShowItemInFolderCommand(LauncherItemViewModel? itemVM)
+    private bool CanShowItemInFolder(LauncherItemViewModel? itemVM)
     {
         if (itemVM == null)
             return false;
@@ -271,7 +235,8 @@ public partial class MainWindowViewModel
         }
     }
 
-    private void ExecuteShowItemInFolderCommand(LauncherItemViewModel? itemVM)
+    [RelayCommand(CanExecute = nameof(CanShowItemInFolder))]
+    private void ShowItemInFolder(LauncherItemViewModel? itemVM)
     {
         Debug.Assert(itemVM is { Type: LauncherItemType.File or LauncherItemType.Folder });
 
@@ -324,13 +289,8 @@ public partial class MainWindowViewModel
 
     #region CopyItemPathCommand
 
-    private bool CanExecuteCopyItemPathCommand(LauncherItemViewModel? itemVM)
-    {
-        return itemVM != null;
-    }
-
-
-    private void ExecuteCopyItemPathCommand(LauncherItemViewModel? itemVM)
+    [RelayCommand]
+    private void CopyItemPath(LauncherItemViewModel? itemVM)
     {
         Debug.Assert(itemVM != null);
 

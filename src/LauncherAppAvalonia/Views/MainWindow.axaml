@@ -3,6 +3,7 @@
         xmlns:vm="using:LauncherAppAvalonia.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:LauncherAppAvalonia.Views"
         mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="600"
         x:Class="LauncherAppAvalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -16,69 +17,87 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
-    <DockPanel>
-        <Grid DockPanel.Dock="Top" ColumnDefinitions="30, *, 30" ShowGridLines="True">
-            <Button Grid.Column="0" Content="＋" Padding="0"
-                    Command="{Binding AddItemCommand}"
-                    CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                <Button.Flyout>
-                    <Flyout>TODO 尚未实现</Flyout>
-                </Button.Flyout>
-            </Button>
-            <TextBox Grid.Column="1" Name="SearchTextBox" Watermark="search items" />
-            <Button Grid.Column="2" Content="⚙" Padding="0"
-                    Command="{Binding OpenSettingsCommand}"
-                    CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                <Button.Flyout>
-                    <Flyout>TODO 尚未实现</Flyout>
-                </Button.Flyout>
-            </Button>
-        </Grid>
+    <Grid>
 
-        <ListBox Name="LauncherItemsListBox"
-                 SelectionMode="Single"
-                 ItemsSource="{Binding FilteredItems}"
-                 AutoScrollToSelectedItem="True">
+        <!-- Main Window -->
+        <DockPanel>
+            <Grid DockPanel.Dock="Top" ColumnDefinitions="30, *, 30" ShowGridLines="True">
+                <Button Grid.Column="0" Content="＋" Padding="0"
+                        Command="{Binding AddItemCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                    <Button.Flyout>
+                        <Flyout>TODO 尚未实现</Flyout>
+                    </Button.Flyout>
+                </Button>
+                <TextBox Grid.Column="1" Name="SearchTextBox" Watermark="search items" />
+                <Button Grid.Column="2" Content="⚙" Padding="0"
+                        Command="{Binding OpenSettingsCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                    <Button.Flyout>
+                        <Flyout>TODO 尚未实现</Flyout>
+                    </Button.Flyout>
+                </Button>
+            </Grid>
 
-            <ListBox.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="打开"
-                              Command="{Binding OpenItemCommand}"
-                              CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
-                    <MenuItem Header="在文件夹中显示"
-                              Command="{Binding ShowItemInFolderCommand}"
-                              CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
-                    <MenuItem Header="复制路径"
-                              Command="{Binding CopyItemPathCommand}"
-                              CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
-                    <MenuItem Header="编辑"
-                              Command="{Binding EditItemCommand}"
-                              CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
-                    <MenuItem Header="移除"
-                              Command="{Binding RemoveItemCommand}"
-                              CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
-                </ContextMenu>
-            </ListBox.ContextMenu>
+            <ListBox Name="LauncherItemsListBox"
+                     SelectionMode="Single"
+                     ItemsSource="{Binding FilteredItems}"
+                     AutoScrollToSelectedItem="True">
 
-            <ListBox.ItemTemplate>
-                <DataTemplate x:DataType="vm:LauncherItemViewModel">
-                    <Grid ColumnDefinitions="30, *" ShowGridLines="True">
-                        <TextBlock Grid.Column="0"
-                                   Text="{Binding Icon}"
-                                   TextAlignment="Center"
-                                   VerticalAlignment="Center" />
-                        <TextBlock Grid.Column="1"
-                                   Text="{Binding Name}"
-                                   TextAlignment="Left"
-                                   VerticalAlignment="Center" />
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-    </DockPanel>
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="打开"
+                                  Command="{Binding OpenItemCommand}"
+                                  CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
+                        <MenuItem Header="在文件夹中显示"
+                                  Command="{Binding ShowItemInFolderCommand}"
+                                  CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
+                        <MenuItem Header="复制路径"
+                                  Command="{Binding CopyItemPathCommand}"
+                                  CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
+                        <MenuItem Header="编辑"
+                                  Command="{Binding EditItemCommand}"
+                                  CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
+                        <MenuItem Header="移除"
+                                  Command="{Binding RemoveItemCommand}"
+                                  CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:LauncherItemViewModel">
+                        <Grid ColumnDefinitions="30, *" ShowGridLines="True">
+                            <TextBlock Grid.Column="0"
+                                       Text="{Binding Icon}"
+                                       TextAlignment="Center"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding Name}"
+                                       TextAlignment="Left"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
+
+        <!-- Item Editor -->
+        <!--<Border Background="#7F000000" IsVisible="{Binding IsItemEditorVisible}">
+            <views:ItemEditorView DataContext="{Binding EditorViewModel}"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Width="300" />-->
+        <Border Background="#7F000000" >
+            <views:ItemEditorView DataContext="{Binding ItemEditorViewModel}"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Width="300" />
+        </Border>
+
+    </Grid>
 
 </Window>
