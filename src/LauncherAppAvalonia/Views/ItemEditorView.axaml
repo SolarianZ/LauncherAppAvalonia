@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="300"
+             x:Class="LauncherAppAvalonia.Views.ItemEditorView">
+
+    <Grid RowDefinitions="Auto,Auto,*, Auto">
+        <!-- Title -->
+        <Panel Background="Gray" Height="28">
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">编辑项目</TextBlock>
+        </Panel>
+
+        <!-- Item Content -->
+        <StackPanel Grid.Row="1" Margin="8" Spacing="8">
+            <TextBox Name="PathTextBox" Watermark="输入路径、网址或命令" Height="80"/>
+            <TextBox Name="NameTextBox" Watermark="输入显示名称（可选）" />
+            <TextBox Name="TypeTextBox" Watermark="选择项目类型" /> <!-- 需要改成下拉选项 -->
+        </StackPanel>
+
+        <!-- Spacing -->
+        <Panel Grid.Row="2" Background="Transparent" />
+
+        <!-- Buttons -->
+        <Grid Grid.Row="3" ColumnDefinitions="Auto,Auto,*,Auto,Auto" ColumnSpacing="4" Margin="8">
+            <!-- Left -->
+            <Button Grid.Column="0" Name="SelectFileButton" ToolTip.Tip="选择本地文件">📄</Button>
+            <Button Grid.Column="1" Name="SelectFolderButton" ToolTip.Tip="选择本地文件夹">📂</Button>
+            <!-- Spacing -->
+            <Panel Grid.Column="2" />
+            <!-- Right -->
+            <Button Grid.Column="3" Name="CancelButton">取消</Button>
+            <Button Grid.Column="4" Name="SaveButton">保存</Button>
+        </Grid>
+    </Grid>
+
+</UserControl>
