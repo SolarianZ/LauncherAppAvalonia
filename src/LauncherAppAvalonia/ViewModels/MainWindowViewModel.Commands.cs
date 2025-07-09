@@ -14,21 +14,45 @@ namespace LauncherAppAvalonia.ViewModels;
 
 public partial class MainWindowViewModel
 {
-    #region AddItemCommand
+    #region AddItem & EditItem
 
     [RelayCommand]
     private void AddItem()
     {
         Debug.Assert(IsItemEditorViewVisible == false);
-        
-        IsItemEditorViewVisible = true;
-        ItemEditorViewModel.SetItem(null);
+
+        ItemEditorViewModel = new ItemEditorViewModel(null, CloseItemEditorView, SaveItemAndCloseItemEditorView);
+    }
+
+    [RelayCommand]
+    private void EditItem(LauncherItemViewModel? itemVM)
+    {
+        Debug.Assert(itemVM != null);
+        Debug.Assert(IsItemEditorViewVisible == false);
+
+        LauncherItem item = itemVM.LauncherItem;
+        ItemEditorViewModel = new ItemEditorViewModel(item, CloseItemEditorView, SaveItemAndCloseItemEditorView);
+    }
+
+    private void CloseItemEditorView()
+    {
+        Debug.Assert(ItemEditorViewModel != null);
+        ItemEditorViewModel = null;
+    }
+
+    private void SaveItemAndCloseItemEditorView()
+    {
+        Debug.Assert(ItemEditorViewModel != null);
+
+        // TODO SaveItem
+
+        CloseItemEditorView();
     }
 
     #endregion
 
 
-    #region OpenSettingsCommand
+    #region OpenSettings
 
     [RelayCommand]
     private void OpenSettings(Control? addButton)
@@ -40,22 +64,7 @@ public partial class MainWindowViewModel
     #endregion
 
 
-    #region EditItemCommand
-
-    [RelayCommand]
-    private void EditItem(LauncherItemViewModel? itemVM)
-    {
-        Debug.Assert(itemVM != null);
-        Debug.Assert(IsItemEditorViewVisible == false);
-
-        IsItemEditorViewVisible = true;
-        ItemEditorViewModel.SetItem(itemVM.LauncherItem);
-    }
-
-    #endregion
-
-
-    #region RemoveItemCommand
+    #region RemoveItem
 
     [RelayCommand]
     private void RemoveItem(LauncherItemViewModel? itemVM)
@@ -67,7 +76,7 @@ public partial class MainWindowViewModel
     #endregion
 
 
-    #region OpenItemCommand
+    #region OpenItem
 
     [RelayCommand]
     private void OpenItem(LauncherItemViewModel? itemVM)
@@ -103,22 +112,22 @@ public partial class MainWindowViewModel
 
     private void OpenFile(string filePath)
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        if (OperatingSystem.IsWindows())
         {
             Process.Start(new ProcessStartInfo(filePath)
             {
                 UseShellExecute = true
             });
         }
-        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        else if (OperatingSystem.IsMacOS())
         {
             Process.Start(new ProcessStartInfo("open", $"\"{filePath}\"")
             {
                 UseShellExecute = true
             });
         }
-        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ||
-                 RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+        else if (OperatingSystem.IsLinux() ||
+                 OperatingSystem.IsFreeBSD())
         {
             Process.Start(new ProcessStartInfo("xdg-open", $"\"{filePath}\"")
             {
@@ -133,22 +142,22 @@ public partial class MainWindowViewModel
 
     private void OpenFolder(string folderPath)
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        if (OperatingSystem.IsWindows())
         {
             Process.Start(new ProcessStartInfo("explorer.exe", $"\"{folderPath}\"")
             {
                 UseShellExecute = true
             });
         }
-        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        else if (OperatingSystem.IsMacOS())
         {
             Process.Start(new ProcessStartInfo("open", $"\"{folderPath}\"")
             {
                 UseShellExecute = true
             });
         }
-        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ||
-                 RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+        else if (OperatingSystem.IsLinux() ||
+                 OperatingSystem.IsFreeBSD())
         {
             Process.Start(new ProcessStartInfo("xdg-open", $"\"{folderPath}\"")
             {
@@ -163,22 +172,22 @@ public partial class MainWindowViewModel
 
     private void OpenUrl(string url)
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        if (OperatingSystem.IsWindows())
         {
             Process.Start(new ProcessStartInfo(url)
             {
                 UseShellExecute = true
             });
         }
-        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        else if (OperatingSystem.IsMacOS())
         {
             Process.Start(new ProcessStartInfo("open", url)
             {
                 UseShellExecute = true
             });
         }
-        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ||
-                 RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+        else if (OperatingSystem.IsLinux() ||
+                 OperatingSystem.IsFreeBSD())
         {
             Process.Start(new ProcessStartInfo("xdg-open", url)
             {
@@ -193,7 +202,7 @@ public partial class MainWindowViewModel
 
     private void OpenCommand(string command)
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        if (OperatingSystem.IsWindows())
         {
             if (!command.StartsWith("/C", StringComparison.OrdinalIgnoreCase) &&
                 !command.StartsWith("/K", StringComparison.OrdinalIgnoreCase))
@@ -204,9 +213,9 @@ public partial class MainWindowViewModel
                 UseShellExecute = false
             });
         }
-        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ||
-                 RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ||
-                 RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+        else if (OperatingSystem.IsMacOS() ||
+                 OperatingSystem.IsLinux() ||
+                 OperatingSystem.IsFreeBSD())
         {
             Process.Start(new ProcessStartInfo("/bin/bash", $"-c \"{command}\"")
             {
@@ -222,7 +231,7 @@ public partial class MainWindowViewModel
     #endregion
 
 
-    #region ShowItemInFolderCommand
+    #region ShowItemInFolder
 
     private bool CanShowItemInFolder(LauncherItemViewModel? itemVM)
     {
@@ -248,12 +257,12 @@ public partial class MainWindowViewModel
         try
         {
             bool isFolder = itemVM.Type == LauncherItemType.Folder;
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (OperatingSystem.IsWindows())
                 ShowItemInFolder_Windows(itemVM.Path, isFolder);
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            else if (OperatingSystem.IsMacOS())
                 ShowItemInFolder_OSX(itemVM.Path, isFolder);
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ||
-                     RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+            else if (OperatingSystem.IsLinux() ||
+                     OperatingSystem.IsFreeBSD())
                 ShowItemInFolder_UNIX(itemVM.Path, isFolder);
             else
                 Debug.WriteLine($"Unsupported OS for showing item in folder: {RuntimeInformation.OSDescription}");
@@ -292,7 +301,7 @@ public partial class MainWindowViewModel
     #endregion
 
 
-    #region CopyItemPathCommand
+    #region CopyItemPath
 
     [RelayCommand]
     private void CopyItemPath(LauncherItemViewModel? itemVM)

@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -24,12 +27,74 @@ public partial class ItemEditorViewModel : ViewModelBase
     [ObservableProperty]
     private LauncherItemType _type = LauncherItemType.Command;
 
+    // 匹配如http://, https://, ftp://, app://, myapp://等协议格式
+    private readonly Regex _protocolRegex = new(@"^[a-z][a-z0-9+.-]*:\/\/", RegexOptions.IgnoreCase);
+    // 匹配标准域名格式 (包括www开头和不带www的域名)
+    private readonly Regex _domainRegex = new(@"^([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,})(:[0-9]{1,5})?(\/.*)?$", RegexOptions.IgnoreCase);
 
-    public void SetItem(LauncherItem? item)
+    private readonly Action _onCancel;
+    private readonly Action _onSave;
+
+
+    public ItemEditorViewModel(LauncherItem? item, Action onCancel, Action onSave)
     {
         Path = item?.Path;
         Name = item?.Name;
         Type = item?.Type ?? LauncherItemType.Command;
+
+        _onCancel = onCancel;
+        _onSave = onSave;
+    }
+
+    /// <inheritdoc />
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+
+        if (e.PropertyName == nameof(Path))
+            DetectItemTypeByPath(Path);
+    }
+
+    private void DetectItemTypeByPath(string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            Type = LauncherItemType.Command;
+            return;
+        }
+
+        if (File.Exists(path))
+        {
+            // Windows特殊逻辑：将BAT视为Command
+            if (OperatingSystem.IsWindows())
+            {
+                string extension = System.IO.Path.GetExtension(path).ToLowerInvariant();
+                if (extension == ".bat")
+                {
+                    Type = LauncherItemType.Command;
+                    return;
+                }
+            }
+
+            Type = LauncherItemType.File;
+            return;
+        }
+
+        if (Directory.Exists(path))
+        {
+            Type = LauncherItemType.Folder;
+            return;
+        }
+
+        // 判断是否是标准协议URL和Deep Link
+        if (_protocolRegex.IsMatch(path) || _domainRegex.IsMatch(path))
+        {
+            Type = LauncherItemType.Url;
+            return;
+        }
+
+        // 默认视为 Command
+        Type = LauncherItemType.Command;
     }
 
 
@@ -72,18 +137,15 @@ public partial class ItemEditorViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void SetInvisible()
+    private void CancelEdit()
     {
-        // TODO 隐藏界面
+        _onCancel.Invoke();
     }
 
     [RelayCommand]
-    private async Task SaveAndSetInvisibleAsync()
+    private void SaveEdit()
     {
-        // 隐藏界面
-        SetInvisible();
-
-        // TODO 保存
+        _onSave.Invoke();
     }
 
     #endregion

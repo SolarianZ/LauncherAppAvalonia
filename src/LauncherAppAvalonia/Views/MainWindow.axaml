@@ -3,7 +3,6 @@
         xmlns:vm="using:LauncherAppAvalonia.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:views="clr-namespace:LauncherAppAvalonia.Views"
         mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="600"
         x:Class="LauncherAppAvalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -11,23 +10,16 @@
         Title="Launcher"
         Width="400" Height="600" MinWidth="300" MinHeight="400">
 
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel />
-    </Design.DataContext>
-
+    <!-- Main Window -->
     <Grid>
 
-        <!-- Main Window -->
+        <!-- Header -->
         <DockPanel>
-            <Grid DockPanel.Dock="Top" ColumnDefinitions="30, *, 30" ShowGridLines="True">
+            <Grid DockPanel.Dock="Top" ColumnDefinitions="30, *, 30">
                 <Button Grid.Column="0" Content="＋" Padding="0"
                         Command="{Binding AddItemCommand}"
-                        CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                </Button>
+                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
                 <TextBox Grid.Column="1" Name="SearchTextBox" Watermark="search items" />
                 <Button Grid.Column="2" Content="⚙" Padding="0"
                         Command="{Binding OpenSettingsCommand}"
@@ -40,6 +32,7 @@
                 </Button>
             </Grid>
 
+			<!-- Item List-->
             <ListBox Name="LauncherItemsListBox"
                      SelectionMode="Single"
                      ItemsSource="{Binding FilteredItems}"
@@ -67,7 +60,7 @@
 
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="vm:LauncherItemViewModel">
-                        <Grid ColumnDefinitions="30, *" ShowGridLines="True">
+                        <Grid ColumnDefinitions="30, *">
                             <TextBlock Grid.Column="0"
                                        Text="{Binding Icon}"
                                        TextAlignment="Center"
@@ -84,8 +77,7 @@
 
         <!-- Item Editor -->
         <Border Background="#7F000000" IsVisible="{Binding IsItemEditorViewVisible}">
-            <views:ItemEditorView DataContext="{Binding ItemEditorViewModel}"
-                                  HorizontalAlignment="Center" VerticalAlignment="Center" Width="300" />
+			<ContentControl Content="{Binding ItemEditorViewModel}"/>
         </Border>
 
     </Grid>

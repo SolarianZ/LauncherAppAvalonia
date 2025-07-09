@@ -9,10 +9,13 @@ namespace LauncherAppAvalonia.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
     public ObservableCollection<LauncherItemViewModel> FilteredItems { get; } = new();
-    public ItemEditorViewModel ItemEditorViewModel { get; } = new();
+
+    public bool IsItemEditorViewVisible => ItemEditorViewModel is not null;
 
     [ObservableProperty]
-    private bool _isItemEditorViewVisible;
+    [NotifyPropertyChangedFor(nameof(IsItemEditorViewVisible))]
+    private ItemEditorViewModel? _itemEditorViewModel;
+
     private readonly DataService _dataService;
 
 
