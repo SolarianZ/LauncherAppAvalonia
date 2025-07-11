@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input.Platform;
+using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
 using LauncherAppAvalonia.Models;
 
@@ -17,11 +18,14 @@ public partial class MainWindowViewModel
     #region AddItem & EditItem
 
     [RelayCommand]
-    private void AddItem()
+    private void AddItem(IBrush? background)
     {
         Debug.Assert(IsItemEditorViewVisible == false);
 
-        ItemEditorViewModel = new ItemEditorViewModel(null, CloseItemEditorView, SaveItemAndCloseItemEditorView);
+        ItemEditorViewModel = new ItemEditorViewModel(null, CloseItemEditorView, SaveItemAndCloseItemEditorView)
+        {
+            ViewBackground = background ?? Brushes.Linen,
+        };
     }
 
     [RelayCommand]

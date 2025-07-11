@@ -18,6 +18,7 @@
             <Grid DockPanel.Dock="Top" ColumnDefinitions="30, *, 30">
                 <Button Grid.Column="0" Content="＋" Padding="0"
                         Command="{Binding AddItemCommand}"
+                        CommandParameter="{Binding $parent[Window].Background}"
                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                         HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
                 <TextBox Grid.Column="1" Name="SearchTextBox" Watermark="search items" />
@@ -32,7 +33,7 @@
                 </Button>
             </Grid>
 
-			<!-- Item List-->
+            <!-- Item List-->
             <ListBox Name="LauncherItemsListBox"
                      SelectionMode="Single"
                      ItemsSource="{Binding FilteredItems}"
@@ -77,7 +78,8 @@
 
         <!-- Item Editor -->
         <Border Background="#7F000000" IsVisible="{Binding IsItemEditorViewVisible}">
-			<ContentControl Content="{Binding ItemEditorViewModel}"/>
+            <!-- ViewLocator会找到ItemEditorViewModel对应的View -->
+            <ContentControl Content="{Binding ItemEditorViewModel}" />
         </Border>
 
     </Grid>

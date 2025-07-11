@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -26,6 +27,9 @@ public partial class ItemEditorViewModel : ViewModelBase
 
     [ObservableProperty]
     private LauncherItemType _type = LauncherItemType.Command;
+
+    [ObservableProperty]
+    private IBrush? _viewBackground;
 
     // 匹配如http://, https://, ftp://, app://, myapp://等协议格式
     private readonly Regex _protocolRegex = new(@"^[a-z][a-z0-9+.-]*:\/\/", RegexOptions.IgnoreCase);

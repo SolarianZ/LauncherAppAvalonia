@@ -7,7 +7,7 @@
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="400"
              x:Class="LauncherAppAvalonia.Views.ItemEditorView"
              x:DataType="viewModels:ItemEditorViewModel"
-             Background="Black">
+             Background="{Binding ViewBackground}">
 
     <UserControl.Resources>
         <converters:LauncherItemTypeToStringConverter x:Key="LauncherItemTypeNameConverter" />
@@ -32,6 +32,7 @@
             -->
 
             <!-- TODO FIXME: 使用ItemsSource创建的ComboBoxItem宽度跟随其内容，没有跟随所属ComboBox -->
+            <!-- https://github.com/AvaloniaUI/Avalonia/issues/19237 -->
             <ComboBox Name="TypeComboBox"
                       ItemsSource="{Binding ItemTypes}"
                       SelectedItem="{Binding Type}"
