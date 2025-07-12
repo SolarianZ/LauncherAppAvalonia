@@ -44,8 +44,7 @@ public partial class ItemEditorViewModel : ViewModelBase
         LauncherItem.PropertyChanged += OnLauncherItemPropertyChanged;
     }
 
-    /// <inheritdoc />
-    protected void OnLauncherItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private void OnLauncherItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(Path))
             DetectItemTypeByPath(LauncherItem.Path);
@@ -64,7 +63,7 @@ public partial class ItemEditorViewModel : ViewModelBase
             // Windows特殊逻辑：将BAT视为Command
             if (OperatingSystem.IsWindows())
             {
-                string extension = System.IO.Path.GetExtension(path).ToLowerInvariant();
+                string extension = Path.GetExtension(path).ToLowerInvariant();
                 if (extension == ".bat")
                 {
                     LauncherItem.Type = LauncherItemType.Command;

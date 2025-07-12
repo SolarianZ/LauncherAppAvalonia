@@ -7,76 +7,80 @@
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="400"
              x:Class="LauncherAppAvalonia.Views.ItemEditorView"
              x:DataType="viewModels:ItemEditorViewModel"
-             Background="{Binding ViewBackground}">
+             MaxWidth="300" MaxHeight="300">
 
     <UserControl.Resources>
         <converters:LauncherItemTypeToStringConverter x:Key="LauncherItemTypeNameConverter" />
     </UserControl.Resources>
 
-    <Grid RowDefinitions="Auto,Auto,*,Auto,Auto">
+    <Border CornerRadius="2" ClipToBounds="True"
+            Background="{Binding ViewBackground}">
 
-        <!-- Title -->
-        <Panel Background="Gray" Height="28">
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">编辑项目</TextBlock>
-        </Panel>
+        <Grid RowDefinitions="Auto,Auto,*,Auto,Auto">
 
-        <!-- Item Content -->
-        <StackPanel Grid.Row="1" Margin="8" Spacing="8">
-            <TextBox Text="{Binding LauncherItem.Path}" Watermark="输入路径、网址或命令" Height="80" />
-            <TextBox Text="{Binding LauncherItem.Name}" Watermark="输入显示名称（可选）" />
-            <!-- 这样创建的ComboBoxItem宽度与所属ComboBox一致
-            <ComboBox HorizontalAlignment="Stretch" SelectedIndex="0">
-                <ComboBoxItem>Test 1</ComboBoxItem>
-                <ComboBoxItem>Test 2</ComboBoxItem>
-            </ComboBox>
-            -->
+            <!-- Title -->
+            <Panel Background="Gray" Height="28">
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">编辑项目</TextBlock>
+            </Panel>
 
-            <!-- TODO FIXME: 使用ItemsSource创建的ComboBoxItem宽度跟随其内容，没有跟随所属ComboBox -->
-            <!-- https://github.com/AvaloniaUI/Avalonia/issues/19237 -->
-            <ComboBox Name="TypeComboBox"
-                      ItemsSource="{Binding ItemTypes}"
-                      SelectedItem="{Binding LauncherItem.Type}"
-                      HorizontalAlignment="Stretch"
-                      ToolTip.Tip="选择项目类型">
-
-                <!-- 这段代码可以修复ComboBoxItem的宽度问题，但会导致ComboBoxItem的鼠标悬停指示等样式消失
-                <ComboBox.ItemContainerTheme>
-                    <ControlTheme TargetType="ComboBoxItem">
-                        <Setter Property="HorizontalAlignment" Value="Stretch" />
-                        <Setter Property="Padding" Value="4" />
-                    </ControlTheme>
-                </ComboBox.ItemContainerTheme>
+            <!-- Item Content -->
+            <StackPanel Grid.Row="1" Margin="8" Spacing="8">
+                <TextBox Text="{Binding LauncherItem.Path}" Watermark="输入路径、网址或命令" Height="80" />
+                <TextBox Text="{Binding LauncherItem.Name}" Watermark="输入显示名称（可选）" />
+                <!-- 这样创建的ComboBoxItem宽度与所属ComboBox一致
+                <ComboBox HorizontalAlignment="Stretch" SelectedIndex="0">
+                    <ComboBoxItem>Test 1</ComboBoxItem>
+                    <ComboBoxItem>Test 2</ComboBoxItem>
+                </ComboBox>
                 -->
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Converter={StaticResource LauncherItemTypeNameConverter}}" />
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-        </StackPanel>
 
-        <!-- Spacing -->
-        <Panel Grid.Row="2" Background="Transparent" />
+                <!-- TODO FIXME: 使用ItemsSource创建的ComboBoxItem宽度跟随其内容，没有跟随所属ComboBox -->
+                <!-- https://github.com/AvaloniaUI/Avalonia/issues/19237 -->
+                <ComboBox Name="TypeComboBox"
+                          ItemsSource="{Binding ItemTypes}"
+                          SelectedItem="{Binding LauncherItem.Type}"
+                          HorizontalAlignment="Stretch"
+                          ToolTip.Tip="选择项目类型">
 
-        <!-- Tips -->
-        <TextBlock Grid.Row="3" Name="ErrorTextBlock" Margin="8"
-                   Foreground="Red" TextWrapping="Wrap">
-            ERROR TEXT 错误信息
-            <LineBreak />
-            ERROR TEXT 错误信息
-        </TextBlock>
+                    <!-- 这段代码可以修复ComboBoxItem的宽度问题，但会导致ComboBoxItem的鼠标悬停指示等样式消失
+                    <ComboBox.ItemContainerTheme>
+                        <ControlTheme TargetType="ComboBoxItem">
+                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                            <Setter Property="Padding" Value="4" />
+                        </ControlTheme>
+                    </ComboBox.ItemContainerTheme>
+                    -->
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource LauncherItemTypeNameConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
 
-        <!-- Buttons -->
-        <Grid Grid.Row="4" ColumnDefinitions="Auto,Auto,*,Auto,Auto" Height="32"
-              ColumnSpacing="4" Margin="8">
-            <!-- Left -->
-            <Button Grid.Column="0" Command="{Binding SelectFileCommand}" ToolTip.Tip="选择本地文件">📄</Button>
-            <Button Grid.Column="1" Command="{Binding SelectFolderCommand}" ToolTip.Tip="选择本地文件夹">📂</Button>
             <!-- Spacing -->
-            <Panel Grid.Column="2" />
-            <!-- Right -->
-            <Button Grid.Column="3" Command="{Binding CancelEditCommand}">取消</Button>
-            <Button Grid.Column="4" Command="{Binding SaveEditCommand}">保存</Button>
+            <Panel Grid.Row="2" Background="Transparent" />
+
+            <!-- Tips -->
+            <TextBlock Grid.Row="3" Name="ErrorTextBlock" Margin="8"
+                       Foreground="Red" TextWrapping="Wrap">
+                ERROR TEXT 错误信息
+                <LineBreak />
+                ERROR TEXT 错误信息
+            </TextBlock>
+
+            <!-- Buttons -->
+            <Grid Grid.Row="4" ColumnDefinitions="Auto,Auto,*,Auto,Auto" Height="32"
+                  ColumnSpacing="4" Margin="8">
+                <!-- Left -->
+                <Button Grid.Column="0" Command="{Binding SelectFileCommand}" ToolTip.Tip="选择本地文件">📄</Button>
+                <Button Grid.Column="1" Command="{Binding SelectFolderCommand}" ToolTip.Tip="选择本地文件夹">📂</Button>
+                <!-- Spacing -->
+                <Panel Grid.Column="2" />
+                <!-- Right -->
+                <Button Grid.Column="3" Command="{Binding CancelEditCommand}">取消</Button>
+                <Button Grid.Column="4" Command="{Binding SaveEditCommand}">保存</Button>
+            </Grid>
         </Grid>
-    </Grid>
+    </Border>
 </UserControl>

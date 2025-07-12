@@ -25,7 +25,7 @@ public partial class MainWindowViewModel
         LauncherItem newItem = new LauncherItem(LauncherItemType.Command, string.Empty, null);
         ItemEditorViewModel = new ItemEditorViewModel(newItem, CloseItemEditorView, SaveItemAndCloseItemEditorView)
         {
-            ViewBackground = background ?? Brushes.Linen,
+            ViewBackground = background,
         };
     }
 
