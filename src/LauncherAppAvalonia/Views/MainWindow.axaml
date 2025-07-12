@@ -21,7 +21,7 @@
                         CommandParameter="{Binding $parent[Window].Background}"
                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                         HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
-                <TextBox Grid.Column="1" Name="SearchTextBox" Watermark="search items" />
+                <TextBox Grid.Column="1" Text="{Binding SearchText}" Watermark="search items" />
                 <Button Grid.Column="2" Content="⚙" Padding="0"
                         Command="{Binding OpenSettingsCommand}"
                         CommandParameter="{Binding RelativeSource={RelativeSource Self}}"

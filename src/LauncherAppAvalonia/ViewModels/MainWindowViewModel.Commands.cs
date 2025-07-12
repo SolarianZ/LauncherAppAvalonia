@@ -49,9 +49,11 @@ public partial class MainWindowViewModel
     {
         Debug.Assert(ItemEditorViewModel != null);
 
-        // TODO SaveItem
-        
+        if(!Items.Contains(item))
+            Items.Add(item);
 
+        _dataService.SetItems(Items);
+        
         CloseItemEditorView();
     }
 
