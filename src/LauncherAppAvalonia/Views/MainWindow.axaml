@@ -23,13 +23,10 @@
                         HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
                 <TextBox Grid.Column="1" Text="{Binding SearchText}" Watermark="search items" />
                 <Button Grid.Column="2" Content="⚙" Padding="0"
-                        Command="{Binding OpenSettingsCommand}"
-                        CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                        Command="{Binding OpenAppSettingsViewCommand}"
+                        CommandParameter="{Binding $parent[Window].Background}"
                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                         HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                    <Button.Flyout>
-                        <Flyout>TODO 尚未实现</Flyout>
-                    </Button.Flyout>
                 </Button>
             </Grid>
 
@@ -82,6 +79,12 @@
         <Border Background="#7F000000" IsVisible="{Binding IsItemEditorViewVisible}">
             <!-- ViewLocator会找到ItemEditorViewModel对应的View -->
             <ContentControl Content="{Binding ItemEditorViewModel}" />
+        </Border>
+
+        <!-- App Settings -->
+        <Border Background="#7F000000" IsVisible="{Binding IsAppSettingsViewVisible}">
+            <!-- ViewLocator会找到AppSettingsViewModel对应的View -->
+            <ContentControl Content="{Binding AppSettingsViewModel}" />
         </Border>
 
     </Grid>

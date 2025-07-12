@@ -14,9 +14,11 @@ public partial class LauncherItem(LauncherItemType type, string path, string? na
     : ObservableObject
 {
     [ObservableProperty]
-    public LauncherItemType _type = type;
+    private LauncherItemType _type = type;
+
     [ObservableProperty]
-    public string _path = path;
+    private string _path = path;
+
     [ObservableProperty]
-    public string? _name = name;
+    private string? _name = name;
 }

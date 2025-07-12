@@ -10,9 +10,9 @@ namespace LauncherAppAvalonia.Services;
 
 public class DataService
 {
-    public string UserDataFolder { get; }
-    public string ItemsFilePath { get; }
-    public string SettingsFilePath { get; }
+    public static string UserDataFolder { get; }
+    public static string ItemsFilePath { get; }
+    public static string SettingsFilePath { get; }
 
     private readonly List<LauncherItem> _items = new();
     private readonly AppSettings _settings = new();
@@ -26,13 +26,16 @@ public class DataService
     };
 
 
-    public DataService()
+    static DataService()
     {
         string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         UserDataFolder = Path.Combine(appDataFolder, "LauncherAppAvalonia", "UserData");
         ItemsFilePath = Path.Combine(UserDataFolder, "items.json");
         SettingsFilePath = Path.Combine(UserDataFolder, "settings.json");
+    }
 
+    public DataService()
+    {
         LoadItems();
         LoadSettings();
     }

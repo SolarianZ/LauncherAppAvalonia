@@ -1,33 +1,32 @@
-using System;
+using System.Collections.Generic;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace LauncherAppAvalonia.Models;
 
-public class AppSettings
+public partial class AppSettings
+    : ObservableObject
 {
-    /// <summary>
-    /// 主题（System/Light/Dark）
-    /// </summary>
-    public string Theme { get; set; } = null!;
+    public static IReadOnlyList<string> Themes { get; } = ["System", "Light", "Dark"];
+    public static IReadOnlyList<string> Languages { get; } = ["System", "zh-CN", "en-US"];
 
-    /// <summary>
-    /// 语言（System/zh-CN/en-US）
-    /// </summary>
-    public string Language { get; set; } = null!;
+    [ObservableProperty]
+    private string _theme = Themes[0];
 
-    /// <summary>
-    /// 快捷键
-    /// </summary>
-    public string? Hotkey { get; set; }
+    [ObservableProperty]
+    private string _language = Languages[0];
+
+    [ObservableProperty]
+    private string? _hotkey = "Alt+Shift+Q";
 
 
-    public AppSettings() => Reset();
+    public AppSettings() { }
 
     public AppSettings(AppSettings source) => Clone(source);
 
     public void Reset()
     {
-        Theme = "System";
-        Language = "System";
+        Theme = Themes[0];
+        Language = Languages[0];
         Hotkey = "Alt+Shift+Q";
     }
 

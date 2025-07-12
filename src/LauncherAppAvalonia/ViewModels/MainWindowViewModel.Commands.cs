@@ -1,11 +1,9 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Controls.Primitives;
 using Avalonia.Input.Platform;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
@@ -41,13 +39,14 @@ public partial class MainWindowViewModel
 
     private void CloseItemEditorView()
     {
-        Debug.Assert(ItemEditorViewModel != null);
+        Debug.Assert(IsItemEditorViewVisible);
+
         ItemEditorViewModel = null;
     }
 
     private void SaveItemAndCloseItemEditorView(LauncherItem item)
     {
-        Debug.Assert(ItemEditorViewModel != null);
+        Debug.Assert(IsItemEditorViewVisible);
 
         if (!Items.Contains(item))
             Items.Add(item);
@@ -62,10 +61,29 @@ public partial class MainWindowViewModel
     #region OpenSettings
 
     [RelayCommand]
-    private void OpenSettings(Control? addButton)
+    private void OpenAppSettingsView(IBrush? background)
     {
-        Debug.Assert(addButton != null);
-        FlyoutBase.ShowAttachedFlyout(addButton);
+        Debug.Assert(IsAppSettingsViewVisible == false);
+
+        AppSettings appSettings = _dataService.GetSettings();
+        AppSettingsViewModel = new AppSettingsViewModel(appSettings, CloseAppSettingsView, SaveAppSettings)
+        {
+            ViewBackground = background,
+        };
+    }
+
+    private void CloseAppSettingsView()
+    {
+        Debug.Assert(IsAppSettingsViewVisible);
+
+        AppSettingsViewModel = null;
+    }
+
+    private void SaveAppSettings(AppSettings appSettings)
+    {
+        Debug.Assert(IsAppSettingsViewVisible);
+
+        _dataService.SetSettings(appSettings);
     }
 
     #endregion
@@ -96,16 +114,16 @@ public partial class MainWindowViewModel
             switch (itemVM.Type)
             {
                 case LauncherItemType.File:
-                    OpenFile(itemVM.Path);
+                    Utility.OpenFile(itemVM.Path);
                     break;
                 case LauncherItemType.Folder:
-                    OpenFolder(itemVM.Path);
+                    Utility.OpenFolder(itemVM.Path);
                     break;
                 case LauncherItemType.Url:
-                    OpenUrl(itemVM.Path);
+                    Utility.OpenUrl(itemVM.Path);
                     break;
                 case LauncherItemType.Command:
-                    OpenCommand(itemVM.Path);
+                    Utility.OpenCommand(itemVM.Path);
                     break;
                 default:
                     Debug.WriteLine("Unsupported item type for opening: " + itemVM.Type);
@@ -115,124 +133,6 @@ public partial class MainWindowViewModel
         catch (Exception ex)
         {
             Debug.WriteLine($"Error opening item: {ex.Message}");
-        }
-    }
-
-    private void OpenFile(string filePath)
-    {
-        if (OperatingSystem.IsWindows())
-        {
-            Process.Start(new ProcessStartInfo(filePath)
-            {
-                UseShellExecute = true
-            });
-        }
-        else if (OperatingSystem.IsMacOS())
-        {
-            Process.Start(new ProcessStartInfo("open", $"\"{filePath}\"")
-            {
-                UseShellExecute = true
-            });
-        }
-        else if (OperatingSystem.IsLinux() ||
-                 OperatingSystem.IsFreeBSD())
-        {
-            Process.Start(new ProcessStartInfo("xdg-open", $"\"{filePath}\"")
-            {
-                UseShellExecute = true
-            });
-        }
-        else
-        {
-            Debug.WriteLine($"Unsupported OS for opening file: {RuntimeInformation.OSDescription}");
-        }
-    }
-
-    private void OpenFolder(string folderPath)
-    {
-        if (OperatingSystem.IsWindows())
-        {
-            Process.Start(new ProcessStartInfo("explorer.exe", $"\"{folderPath}\"")
-            {
-                UseShellExecute = true
-            });
-        }
-        else if (OperatingSystem.IsMacOS())
-        {
-            Process.Start(new ProcessStartInfo("open", $"\"{folderPath}\"")
-            {
-                UseShellExecute = true
-            });
-        }
-        else if (OperatingSystem.IsLinux() ||
-                 OperatingSystem.IsFreeBSD())
-        {
-            Process.Start(new ProcessStartInfo("xdg-open", $"\"{folderPath}\"")
-            {
-                UseShellExecute = true
-            });
-        }
-        else
-        {
-            Debug.WriteLine($"Unsupported OS for opening folder: {RuntimeInformation.OSDescription}");
-        }
-    }
-
-    private void OpenUrl(string url)
-    {
-        if (OperatingSystem.IsWindows())
-        {
-            Process.Start(new ProcessStartInfo(url)
-            {
-                UseShellExecute = true
-            });
-        }
-        else if (OperatingSystem.IsMacOS())
-        {
-            Process.Start(new ProcessStartInfo("open", url)
-            {
-                UseShellExecute = true
-            });
-        }
-        else if (OperatingSystem.IsLinux() ||
-                 OperatingSystem.IsFreeBSD())
-        {
-            Process.Start(new ProcessStartInfo("xdg-open", url)
-            {
-                UseShellExecute = true
-            });
-        }
-        else
-        {
-            Debug.WriteLine($"Unsupported OS for opening URL: {RuntimeInformation.OSDescription}");
-        }
-    }
-
-    private void OpenCommand(string command)
-    {
-        if (OperatingSystem.IsWindows())
-        {
-            if (!command.StartsWith("/C", StringComparison.OrdinalIgnoreCase) &&
-                !command.StartsWith("/K", StringComparison.OrdinalIgnoreCase))
-                command = $"/K {command}";
-
-            Process.Start(new ProcessStartInfo("cmd.exe", command)
-            {
-                UseShellExecute = false
-            });
-        }
-        else if (OperatingSystem.IsMacOS() ||
-                 OperatingSystem.IsLinux() ||
-                 OperatingSystem.IsFreeBSD())
-        {
-            Process.Start(new ProcessStartInfo("/bin/bash", $"-c \"{command}\"")
-            {
-                UseShellExecute = false
-            });
-        }
-        else
-        {
-            Debug.WriteLine($"Unsupported OS for executing command: {RuntimeInformation.OSDescription}");
         }
     }
 
@@ -259,48 +159,7 @@ public partial class MainWindowViewModel
     {
         Debug.Assert(itemVM is { Type: LauncherItemType.File or LauncherItemType.Folder });
 
-        try
-        {
-            bool isFolder = itemVM.Type == LauncherItemType.Folder;
-            if (OperatingSystem.IsWindows())
-                ShowItemInFolder_Windows(itemVM.Path, isFolder);
-            else if (OperatingSystem.IsMacOS())
-                ShowItemInFolder_OSX(itemVM.Path, isFolder);
-            else if (OperatingSystem.IsLinux() ||
-                     OperatingSystem.IsFreeBSD())
-                ShowItemInFolder_UNIX(itemVM.Path, isFolder);
-            else
-                Debug.WriteLine($"Unsupported OS for showing item in folder: {RuntimeInformation.OSDescription}");
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Error showing item in folder: {ex.Message}");
-        }
-    }
-
-    private void ShowItemInFolder_Windows(string path, bool isFolder)
-    {
-        Process.Start(new ProcessStartInfo("explorer.exe", $"/select,\"{path}\"")
-        {
-            UseShellExecute = true
-        });
-    }
-
-    private void ShowItemInFolder_OSX(string path, bool isFolder)
-    {
-        Process.Start(new ProcessStartInfo("open", $"-R \"{path}\"")
-        {
-            UseShellExecute = true
-        });
-    }
-
-    private void ShowItemInFolder_UNIX(string path, bool isFolder)
-    {
-        string command = isFolder ? "xdg-open" : "xdg-open --select";
-        Process.Start(new ProcessStartInfo(command, $"\"{path}\"")
-        {
-            UseShellExecute = true
-        });
+        Utility.ShowItemInFolder(itemVM.Path);
     }
 
     #endregion
