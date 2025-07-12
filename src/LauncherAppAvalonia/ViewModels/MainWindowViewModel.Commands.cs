@@ -49,11 +49,10 @@ public partial class MainWindowViewModel
     {
         Debug.Assert(ItemEditorViewModel != null);
 
-        if(!Items.Contains(item))
+        if (!Items.Contains(item))
             Items.Add(item);
-
         _dataService.SetItems(Items);
-        
+
         CloseItemEditorView();
     }
 
@@ -75,10 +74,11 @@ public partial class MainWindowViewModel
     #region RemoveItem
 
     [RelayCommand]
-    private void RemoveItem(LauncherItemViewModel? itemVM)
+    private void RemoveItem(LauncherItemViewModel itemVM)
     {
-        Debug.Assert(itemVM != null);
-        Debug.WriteLine($"TODO Remove Item: [{itemVM.Type}] {itemVM.Path}");
+        LauncherItem item = itemVM.LauncherItem;
+        Items.Remove(item);
+        _dataService.SetItems(Items);
     }
 
     #endregion
@@ -87,7 +87,7 @@ public partial class MainWindowViewModel
     #region OpenItem
 
     [RelayCommand]
-    private void OpenItem(LauncherItemViewModel? itemVM)
+    private void OpenItem(LauncherItemViewModel itemVM)
     {
         Debug.Assert(itemVM != null);
 
@@ -246,19 +246,16 @@ public partial class MainWindowViewModel
         if (itemVM == null)
             return false;
 
-        switch (itemVM.Type)
+        return itemVM.Type switch
         {
-            case LauncherItemType.File:
-                return File.Exists(itemVM.Path);
-            case LauncherItemType.Folder:
-                return Directory.Exists(itemVM.Path);
-            default:
-                return false;
-        }
+            LauncherItemType.File => File.Exists(itemVM.Path),
+            LauncherItemType.Folder => Directory.Exists(itemVM.Path),
+            _ => false
+        };
     }
 
     [RelayCommand(CanExecute = nameof(CanShowItemInFolder))]
-    private void ShowItemInFolder(LauncherItemViewModel? itemVM)
+    private void ShowItemInFolder(LauncherItemViewModel itemVM)
     {
         Debug.Assert(itemVM is { Type: LauncherItemType.File or LauncherItemType.Folder });
 
@@ -312,10 +309,8 @@ public partial class MainWindowViewModel
     #region CopyItemPath
 
     [RelayCommand]
-    private void CopyItemPath(LauncherItemViewModel? itemVM)
+    private void CopyItemPath(LauncherItemViewModel itemVM)
     {
-        Debug.Assert(itemVM != null);
-
         try
         {
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)

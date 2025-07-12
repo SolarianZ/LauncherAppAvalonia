@@ -35,6 +35,7 @@ public partial class MainWindowViewModel : ViewModelBase
         // 初始化数据
         List<LauncherItem> items = _dataService.GetItems();
         _items = new ObservableCollection<LauncherItem>(items);
+        Items.CollectionChanged += (_, _) => UpdateFilteredItems();
         UpdateFilteredItems();
     }
 
