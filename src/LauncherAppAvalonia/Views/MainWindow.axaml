@@ -37,6 +37,7 @@
             <ListBox Name="LauncherItemsListBox"
                      ItemsSource="{Binding FilteredItems}"
                      SelectedItem="{Binding SelectedItem}"
+                     DoubleTapped="OnItemListBoxItemDoubleTapped"
                      SelectionMode="Single"
                      AutoScrollToSelectedItem="True">
 
