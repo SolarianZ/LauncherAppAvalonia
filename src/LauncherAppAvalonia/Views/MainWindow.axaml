@@ -35,27 +35,28 @@
 
             <!-- Item List-->
             <ListBox Name="LauncherItemsListBox"
-                     SelectionMode="Single"
                      ItemsSource="{Binding FilteredItems}"
+                     SelectedItem="{Binding SelectedItem}"
+                     SelectionMode="Single"
                      AutoScrollToSelectedItem="True">
 
                 <ListBox.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="打开"
                                   Command="{Binding OpenItemCommand}"
-                                  CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
+                                  CommandParameter="{Binding SelectedItem}" />
                         <MenuItem Header="在文件夹中显示"
                                   Command="{Binding ShowItemInFolderCommand}"
-                                  CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
+                                  CommandParameter="{Binding SelectedItem}" />
                         <MenuItem Header="复制路径"
                                   Command="{Binding CopyItemPathCommand}"
-                                  CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
+                                  CommandParameter="{Binding SelectedItem}" />
                         <MenuItem Header="编辑"
                                   Command="{Binding EditItemCommand}"
-                                  CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
+                                  CommandParameter="{Binding SelectedItem}" />
                         <MenuItem Header="移除"
                                   Command="{Binding RemoveItemCommand}"
-                                  CommandParameter="{Binding $parent[ListBox].SelectedItem}" />
+                                  CommandParameter="{Binding SelectedItem}" />
                     </ContextMenu>
                 </ListBox.ContextMenu>
 

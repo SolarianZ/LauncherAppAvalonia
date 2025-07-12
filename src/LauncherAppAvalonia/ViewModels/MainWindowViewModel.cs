@@ -22,6 +22,9 @@ public partial class MainWindowViewModel : ViewModelBase
     private ObservableCollection<LauncherItemViewModel> _filteredItems = new();
 
     [ObservableProperty]
+    private LauncherItemViewModel? _selectedItem;
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsItemEditorViewVisible))]
     private ItemEditorViewModel? _itemEditorViewModel;
 
