@@ -42,14 +42,14 @@
                           HorizontalAlignment="Stretch"
                           ToolTip.Tip="选择项目类型">
 
-                    <!-- 这段代码可以修复ComboBoxItem的宽度问题，但会导致ComboBoxItem的鼠标悬停指示等样式消失
+                    <!-- 这段代码可以修复ComboBoxItem的宽度问题，但在Windows 11上没用
                     <ComboBox.ItemContainerTheme>
-                        <ControlTheme TargetType="ComboBoxItem">
+                        <ControlTheme TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
                             <Setter Property="HorizontalAlignment" Value="Stretch" />
-                            <Setter Property="Padding" Value="4" />
                         </ControlTheme>
                     </ComboBox.ItemContainerTheme>
                     -->
+                    
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Converter={StaticResource LauncherItemTypeNameConverter}}" />
