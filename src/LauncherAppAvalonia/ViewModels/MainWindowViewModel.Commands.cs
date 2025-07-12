@@ -22,14 +22,15 @@ public partial class MainWindowViewModel
     {
         Debug.Assert(IsItemEditorViewVisible == false);
 
-        ItemEditorViewModel = new ItemEditorViewModel(null, CloseItemEditorView, SaveItemAndCloseItemEditorView)
+        LauncherItem newItem = new LauncherItem(LauncherItemType.Command, string.Empty, null);
+        ItemEditorViewModel = new ItemEditorViewModel(newItem, CloseItemEditorView, SaveItemAndCloseItemEditorView)
         {
             ViewBackground = background ?? Brushes.Linen,
         };
     }
 
     [RelayCommand]
-    private void EditItem(LauncherItemViewModel? itemVM)
+    private void EditItem(LauncherItemViewModel itemVM)
     {
         Debug.Assert(itemVM != null);
         Debug.Assert(IsItemEditorViewVisible == false);
@@ -44,11 +45,12 @@ public partial class MainWindowViewModel
         ItemEditorViewModel = null;
     }
 
-    private void SaveItemAndCloseItemEditorView()
+    private void SaveItemAndCloseItemEditorView(LauncherItem item)
     {
         Debug.Assert(ItemEditorViewModel != null);
 
         // TODO SaveItem
+        
 
         CloseItemEditorView();
     }

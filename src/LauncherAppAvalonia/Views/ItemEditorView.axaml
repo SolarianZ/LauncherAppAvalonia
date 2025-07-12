@@ -22,8 +22,8 @@
 
         <!-- Item Content -->
         <StackPanel Grid.Row="1" Margin="8" Spacing="8">
-            <TextBox Text="{Binding Path}" Watermark="输入路径、网址或命令" Height="80" />
-            <TextBox Text="{Binding Name}" Watermark="输入显示名称（可选）" />
+            <TextBox Text="{Binding LauncherItem.Path}" Watermark="输入路径、网址或命令" Height="80" />
+            <TextBox Text="{Binding LauncherItem.Name}" Watermark="输入显示名称（可选）" />
             <!-- 这样创建的ComboBoxItem宽度与所属ComboBox一致
             <ComboBox HorizontalAlignment="Stretch" SelectedIndex="0">
                 <ComboBoxItem>Test 1</ComboBoxItem>
@@ -35,7 +35,7 @@
             <!-- https://github.com/AvaloniaUI/Avalonia/issues/19237 -->
             <ComboBox Name="TypeComboBox"
                       ItemsSource="{Binding ItemTypes}"
-                      SelectedItem="{Binding Type}"
+                      SelectedItem="{Binding LauncherItem.Type}"
                       HorizontalAlignment="Stretch"
                       ToolTip.Tip="选择项目类型">
 

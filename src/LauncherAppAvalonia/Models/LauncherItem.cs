@@ -1,3 +1,5 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace LauncherAppAvalonia.Models;
 
 public enum LauncherItemType
@@ -8,9 +10,13 @@ public enum LauncherItemType
     Command,
 }
 
-public class LauncherItem(LauncherItemType type, string path, string? name)
+public partial class LauncherItem(LauncherItemType type, string path, string? name)
+    : ObservableObject
 {
-    public LauncherItemType Type { get; set; } = type;
-    public string Path { get; set; } = path;
-    public string? Name { get; set; } = name;
+    [ObservableProperty]
+    public LauncherItemType _type = type;
+    [ObservableProperty]
+    public string _path = path;
+    [ObservableProperty]
+    public string? _name = name;
 }

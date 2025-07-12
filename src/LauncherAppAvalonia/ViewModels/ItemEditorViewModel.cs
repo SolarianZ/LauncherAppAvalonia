@@ -17,16 +17,10 @@ namespace LauncherAppAvalonia.ViewModels;
 
 public partial class ItemEditorViewModel : ViewModelBase
 {
-    public LauncherItemType[] ItemTypes { get; } = Enum.GetValues<LauncherItemType>();
+    public static LauncherItemType[] ItemTypes { get; } = Enum.GetValues<LauncherItemType>();
 
     [ObservableProperty]
-    private string? _path = string.Empty;
-
-    [ObservableProperty]
-    private string? _name = string.Empty;
-
-    [ObservableProperty]
-    private LauncherItemType _type = LauncherItemType.Command;
+    private LauncherItem _launcherItem;
 
     [ObservableProperty]
     private IBrush? _viewBackground;
@@ -37,33 +31,31 @@ public partial class ItemEditorViewModel : ViewModelBase
     private readonly Regex _domainRegex = new(@"^([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,})(:[0-9]{1,5})?(\/.*)?$", RegexOptions.IgnoreCase);
 
     private readonly Action _onCancel;
-    private readonly Action _onSave;
+    private readonly Action<LauncherItem> _onSave;
 
 
-    public ItemEditorViewModel(LauncherItem? item, Action onCancel, Action onSave)
+    public ItemEditorViewModel(LauncherItem item, Action onCancel, Action<LauncherItem> onSave)
     {
-        Path = item?.Path;
-        Name = item?.Name;
-        Type = item?.Type ?? LauncherItemType.Command;
+        LauncherItem = item;
 
         _onCancel = onCancel;
         _onSave = onSave;
+
+        LauncherItem.PropertyChanged += OnLauncherItemPropertyChanged;
     }
 
     /// <inheritdoc />
-    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    protected void OnLauncherItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        base.OnPropertyChanged(e);
-
         if (e.PropertyName == nameof(Path))
-            DetectItemTypeByPath(Path);
+            DetectItemTypeByPath(LauncherItem.Path);
     }
 
     private void DetectItemTypeByPath(string? path)
     {
         if (string.IsNullOrWhiteSpace(path))
         {
-            Type = LauncherItemType.Command;
+            LauncherItem.Type = LauncherItemType.Command;
             return;
         }
 
@@ -75,30 +67,30 @@ public partial class ItemEditorViewModel : ViewModelBase
                 string extension = System.IO.Path.GetExtension(path).ToLowerInvariant();
                 if (extension == ".bat")
                 {
-                    Type = LauncherItemType.Command;
+                    LauncherItem.Type = LauncherItemType.Command;
                     return;
                 }
             }
 
-            Type = LauncherItemType.File;
+            LauncherItem.Type = LauncherItemType.File;
             return;
         }
 
         if (Directory.Exists(path))
         {
-            Type = LauncherItemType.Folder;
+            LauncherItem.Type = LauncherItemType.Folder;
             return;
         }
 
         // 判断是否是标准协议URL和Deep Link
         if (_protocolRegex.IsMatch(path) || _domainRegex.IsMatch(path))
         {
-            Type = LauncherItemType.Url;
+            LauncherItem.Type = LauncherItemType.Url;
             return;
         }
 
         // 默认视为 Command
-        Type = LauncherItemType.Command;
+        LauncherItem.Type = LauncherItemType.Command;
     }
 
 
@@ -119,7 +111,7 @@ public partial class ItemEditorViewModel : ViewModelBase
                 AllowMultiple = false
             });
         if (files.Count > 0)
-            Path = files[0].Path.LocalPath;
+            LauncherItem.Path = files[0].Path.LocalPath;
     }
 
     [RelayCommand]
@@ -137,7 +129,7 @@ public partial class ItemEditorViewModel : ViewModelBase
                 AllowMultiple = false
             });
         if (folders.Count > 0)
-            Path = folders[0].Path.LocalPath;
+            LauncherItem.Path = folders[0].Path.LocalPath;
     }
 
     [RelayCommand]
@@ -149,7 +141,7 @@ public partial class ItemEditorViewModel : ViewModelBase
     [RelayCommand]
     private void SaveEdit()
     {
-        _onSave.Invoke();
+        _onSave.Invoke(LauncherItem);
     }
 
     #endregion
