@@ -9,55 +9,91 @@
              Background="{Binding ViewBackground}">
 
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:AppSettingsViewModel />
     </Design.DataContext>
 
-    <StackPanel>
-        <!-- Title -->
-        <Panel Background="Gray" Height="28">
-            <Button Command="{Binding CloseSettingsCommand}">←</Button>
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">编辑项目</TextBlock>
-        </Panel>
+    <ScrollViewer>
+        <StackPanel Spacing="10">
 
-        <!-- 外观 -->
-        <StackPanel>
-            <TextBlock>外观</TextBlock>
-            <Grid RowDefinitions="Auto,Auto"
-                  ColumnDefinitions="60,*">
-                <!-- 主题 -->
-                <TextBlock Grid.Row="0" Grid.Column="0">主题</TextBlock>
-                <ComboBox Grid.Row="0" Grid.Column="1"
-                          ItemsSource="{Binding AppSettings.Themes}"
-                          SelectedItem="{Binding AppSettings.Theme}"
-                          HorizontalAlignment="Stretch"
-                          ToolTip.Tip="选择应用主题">
-                </ComboBox>
+            <!-- 标题栏 -->
+            <Border Background="{DynamicResource ThemeAccentBrush}"
+                    CornerRadius="8"
+                    Padding="10">
+                <DockPanel>
+                    <Button Content="←"
+                            Command="{Binding CloseSettingsCommand}"
+                            Background="Transparent" Foreground="White"
+                            FontSize="16" FontWeight="Bold"
+                            BorderThickness="0"
+                            VerticalAlignment="Center"
+                            Padding="4" />
+                    <TextBlock Text="设置"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               Foreground="White" />
+                </DockPanel>
+            </Border>
 
-                <!-- 语言 -->
-                <TextBlock Grid.Row="1" Grid.Column="0">语言</TextBlock>
-                <ComboBox Grid.Row="1" Grid.Column="1"
-                          ItemsSource="{Binding AppSettings.Languages}"
-                          SelectedItem="{Binding AppSettings.Language}"
-                          HorizontalAlignment="Stretch"
-                          ToolTip.Tip="选择应用语言">
-                </ComboBox>
-            </Grid>
+            <!-- 外观设置 -->
+            <Border Background="{DynamicResource ThemeControlMidBrush}"
+                    CornerRadius="8" Padding="8">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="外观"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource ThemeForegroundBrush}" />
+
+                    <Grid RowDefinitions="Auto,Auto"
+                          ColumnDefinitions="60,*"
+                          Margin="0,8,0,0"
+                          RowSpacing="8">
+                        <!-- 主题 -->
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                                   VerticalAlignment="Center"
+                                   Text="主题"
+                                   Foreground="{DynamicResource ThemeForegroundBrush}" />
+                        <ComboBox Grid.Row="0" Grid.Column="1"
+                                  ItemsSource="{Binding AppSettings.Themes}"
+                                  SelectedItem="{Binding AppSettings.Theme}"
+                                  HorizontalAlignment="Stretch"
+                                  ToolTip.Tip="选择应用主题" />
+
+                        <!-- 语言 -->
+                        <TextBlock Grid.Row="1" Grid.Column="0"
+                                   VerticalAlignment="Center"
+                                   Text="语言"
+                                   Foreground="{DynamicResource ThemeForegroundBrush}" />
+                        <ComboBox Grid.Row="1" Grid.Column="1"
+                                  ItemsSource="{Binding AppSettings.Languages}"
+                                  SelectedItem="{Binding AppSettings.Language}"
+                                  HorizontalAlignment="Stretch"
+                                  ToolTip.Tip="选择应用语言" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- 数据设置 -->
+            <Border Background="{DynamicResource ThemeControlMidBrush}"
+                    CornerRadius="8"
+                    Padding="8">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="数据"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource ThemeForegroundBrush}" />
+
+                    <Button Content="清除所有记录"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding ClearItemsCommand}"
+                            Margin="0,8,0,0" />
+
+                    <Button Content="打开数据文件夹"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding OpenDataFolderCommand}" />
+                </StackPanel>
+            </Border>
         </StackPanel>
-
-        <!-- 数据 -->
-        <StackPanel>
-            <TextBlock>数据</TextBlock>
-            <Button HorizontalAlignment="Stretch"
-                    Command="{Binding ClearItemsCommand}">
-                清除所有记录
-            </Button>
-            <Button HorizontalAlignment="Stretch"
-                    Command="{Binding OpenDataFolderCommand}">
-                打开数据文件夹
-            </Button>
-        </StackPanel>
-    </StackPanel>
-
+    </ScrollViewer>
 </UserControl>
